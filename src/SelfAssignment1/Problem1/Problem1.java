@@ -1,6 +1,6 @@
-package problem1;
+package SelfAssignment1.Problem1;
 
-public class problem1 {
+public class Problem1 {
 
     public static void main(String[] args) {
 
