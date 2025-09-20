@@ -1,5 +1,6 @@
+package SelfAssignment1.Problem3;
 
-public class StringCharecters {
+public class StringCharacters {
     public static void main(String[] args) {
         String str = "To be or not to be, that is the question--"
                 + "whether 'tis nobler in the mind to suffer"
