@@ -13,7 +13,11 @@ public class Problem4 {
         // Split string will be fitered out for any special characters
         // Everything will be set to lowercase, since Uppercase words will always be sorted in favor for lowercase words
         // Setting to lowercas and printing the letters is done by using a method-reference for the respective methods
-        //Arrays.stream(splitText).map(elem -> elem.replaceAll("[^a-zA-Z0-9\\\\s]", "")).map(String::toLowerCase).sorted().forEach(System.out::println);
+
+        Arrays.stream(splitText).map(elem -> elem.replaceAll("[^a-zA-Z0-9\\\\s]", " ")).map(String::toLowerCase).sorted().forEach(System.out::println);
+
+        //Printing linebreaks
+        System.out.println("\n\n");
 
         // Sorting with bubble sort but without setting the words to lower case and filtering out the special characters
         Arrays.stream(bubbleSort(splitText)).forEach(System.out::println);
