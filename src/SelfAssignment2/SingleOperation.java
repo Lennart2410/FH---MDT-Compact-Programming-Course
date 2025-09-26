@@ -1,10 +1,13 @@
 package SelfAssignment2;
 
 
+import java.util.List;
+
 public class SingleOperation implements IOperation {
     private final String id;
     private final String description;
     private final double nominalTimeMinutes;
+    private List<AGV> agvResources;
 
 
     public SingleOperation(String id, String description,
@@ -22,6 +25,11 @@ public class SingleOperation implements IOperation {
         return description;
     }
 
+    @Override
+    public List<AGV> getAGVList() {
+        return agvResources;
+    }
+
 
     @Override
     public double getNominalTimeMinutes() {
@@ -31,8 +39,7 @@ public class SingleOperation implements IOperation {
 
     @Override
     public int getAgvRequired() {
-        // To be implemented
-        return 0;
+        return agvResources.size();
     }
 }
 
