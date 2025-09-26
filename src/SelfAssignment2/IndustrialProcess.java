@@ -28,7 +28,7 @@ public class IndustrialProcess {
     }
 
     public List<AGV> processResources(){
-        List<AGV> resources = new ArrayList<AGV>();
+        List<AGV> resources = new ArrayList<>();
         for(IOperation operation : operations){
             resources.addAll(operation.getAGVList());
         }
