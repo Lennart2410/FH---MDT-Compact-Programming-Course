@@ -7,14 +7,15 @@ public class SingleOperation implements IOperation {
     private final String id;
     private final String description;
     private final double nominalTimeMinutes;
-    private List<AGV> agvResources;
+    private final List<AGV> agvResources;
 
 
     public SingleOperation(String id, String description,
-                           double nominalTimeMinutes) {
+                           double nominalTimeMinutes, List<AGV> agvResources) {
         this.id = id;
         this.description = description;
         this.nominalTimeMinutes = nominalTimeMinutes;
+        this.agvResources = agvResources;
     }
 
     public String getId() {
