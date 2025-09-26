@@ -14,6 +14,10 @@ public class IndustrialProcess {
         this.operations = operations;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public double processDuration() {
         double totalTime = 0.0;
         for(IOperation operation : operations){
