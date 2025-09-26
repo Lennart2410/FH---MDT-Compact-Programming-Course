@@ -1,5 +1,6 @@
 package SelfAssignment2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,12 +27,12 @@ public class IndustrialProcess {
         return totalTime;
     }
 
-    public int processResources(){
-        int avgResourceCount = 0;
-
-        // Implementation to be done
-
-        return avgResourceCount;
+    public List<AGV> processResources(){
+        List<AGV> resources = new ArrayList<AGV>();
+        for(IOperation operation : operations){
+            resources.addAll(operation.getAGVList());
+        }
+        return resources;
     }
 
 
