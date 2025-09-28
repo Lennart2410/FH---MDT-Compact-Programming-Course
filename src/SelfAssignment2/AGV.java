@@ -75,4 +75,14 @@ public class AGV {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String toString() {
+        return "ID: " + id + "\n" +
+                "Battery load: " + batteryLoad + "\n" +
+                "Consumption rate: " + consumption + "\n" +
+                "Current position: X-> " + position.getxCoordinate() + " - Y-> " + position.getyCoordinate() + "\n" +
+                "Charging duration: " + chargingTimeInMinutes + "min" + "\n"+
+                "Maximum speed: " + maxSpeed + "\n" +
+                "Standard action speed: " + actSpeed + "\n";
+    }
 }
