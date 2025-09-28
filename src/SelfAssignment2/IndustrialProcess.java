@@ -3,28 +3,17 @@ package SelfAssignment2;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Process holding N operations
- */
+/** Process holding N operations */
 public class IndustrialProcess {
     private final String id;
-    private final List<IOperation> operations;
+    private final List<IOperation> operations = new ArrayList<>();
 
-    public IndustrialProcess(String id, List<IOperation> operations) {
+    public IndustrialProcess(String id) {
         this.id = id;
-        this.operations = operations;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public double processDuration() {
-        double totalTime = 0.0;
-        for(IOperation operation : operations){
-            totalTime += operation.getNominalTimeMinutes();
-        }
-        return totalTime;
+    public void addOperation(IOperation op) {
+        operations.add(op);
     }
 
     public List<AGV> processResources(){
@@ -35,5 +24,13 @@ public class IndustrialProcess {
         return resources;
     }
 
+
+    public List<IOperation> getOperations() {
+        return operations;
+    }
+
+    public String getId() {
+        return id;
+    }
 
 }
