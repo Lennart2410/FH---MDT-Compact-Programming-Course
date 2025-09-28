@@ -5,7 +5,7 @@ import java.util.List;
 
 /** Process holding N operations */
 public class IndustrialProcess {
-	private final String id;
+    private final String id;
     private final List<IOperation> operations = new ArrayList<>();
 
     public IndustrialProcess(String id) {
@@ -14,6 +14,14 @@ public class IndustrialProcess {
 
     public void addOperation(IOperation op) {
         operations.add(op);
+    }
+
+    public List<IOperation> getOperations() {
+        return operations;
+    }
+
+    public String getId() {
+        return id;
     }
 
 }
