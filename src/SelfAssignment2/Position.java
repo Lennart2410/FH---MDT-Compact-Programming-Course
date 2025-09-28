@@ -4,7 +4,7 @@ public class Position {
     private final int xCoordinate;
     private final int yCoordinate;
 
-    public Position(int yCoordinate, int xCoordinate){
+    public Position(int yCoordinate, int xCoordinate) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
     }
@@ -16,6 +16,5 @@ public class Position {
     public int getyCoordinate() {
         return yCoordinate;
     }
-
 
 }

@@ -9,7 +9,8 @@ public class AGV {
     private float maxSpeed;
     private float actSpeed;
 
-    public AGV(String id, double batteryLoad, double consumption, Position position, double chargingTimeInMinutes, float maxSpeed, float actSpeed) {
+    public AGV(String id, double batteryLoad, double consumption, Position position, double chargingTimeInMinutes,
+            float maxSpeed, float actSpeed) {
         this.id = id;
         this.batteryLoad = batteryLoad;
         this.consumption = consumption;
@@ -18,7 +19,6 @@ public class AGV {
         this.maxSpeed = maxSpeed;
         this.actSpeed = actSpeed;
     }
-
 
     public float getActSpeed() {
         return actSpeed;

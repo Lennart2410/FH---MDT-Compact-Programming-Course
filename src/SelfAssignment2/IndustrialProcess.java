@@ -6,31 +6,31 @@ import java.util.List;
 /** Process holding N operations */
 public class IndustrialProcess {
     private final String id;
-    private final List<IOperation> operations = new ArrayList<>();
+    private final List<IOperation> operations;
 
-    public IndustrialProcess(String id) {
+    public IndustrialProcess(String id, List<IOperation> operations) {
         this.id = id;
-    }
-
-    public void addOperation(IOperation op) {
-        operations.add(op);
-    }
-
-    public List<AGV> processResources(){
-        List<AGV> resources = new ArrayList<>();
-        for(IOperation operation : operations){
-            resources.addAll(operation.getAGVList());
-        }
-        return resources;
-    }
-
-
-    public List<IOperation> getOperations() {
-        return operations;
+        this.operations = operations;
     }
 
     public String getId() {
         return id;
+    }
+
+    public double processDuration() {
+        double totalTime = 0.0;
+        for (IOperation operation : operations) {
+            totalTime += operation.getNominalTimeMinutes();
+        }
+        return totalTime;
+    }
+
+    public List<AGV> processResources() {
+        List<AGV> resources = new ArrayList<>();
+        for (IOperation operation : operations) {
+            resources.addAll(operation.getAGVList());
+        }
+        return resources;
     }
 
 }
