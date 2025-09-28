@@ -1,48 +1,89 @@
 package SelfAssignment2;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class IndustrialProcessesSimulation {
 	public static void main(String[] args) {
-		IndustrialProcess process = new IndustrialProcess("Process-Alpha");
+		// Step 1: Create AGVs
+		AGV agv_01 = new AGV("A01", 100.0, 15.0, new Position(40, 40), 10, 4.0f, 2.0f);
+		AGV agv_02 = new AGV("A02", 50.0, 20.0, new Position(10, 78), 12, 10.0f, 6.0f);
+		AGV agv_03 = new AGV("A03", 85.0, 5.0, new Position(1, 1), 10, 2.0f, 1.0f);
 
-		// Add SingleOperations to the process
-		process.addOperation(new SingleOperation("Op1", "Loading", 2, 10.0));
-		process.addOperation(new SingleOperation("Op2", "Transport", 3, 25.0));
-		process.addOperation(new SingleOperation("Op3", "Packing", 1, 5.0));
-		process.addOperation(new SingleOperation("Op4", "Inspection", 2, 15.0));
+		// Step 2: Create Operations
+		SingleOperation op1 = new SingleOperation("OP01", "Transport goods", 30.0, List.of(agv_01, agv_02));
+		SingleOperation op2 = new SingleOperation("OP02", "Load materials", 45.0, List.of(agv_03));
+		SingleOperation op3 = new SingleOperation("OP03", "Unload items", 20.0, List.of(agv_01));
 
-		// Get all operations
-		List<IOperation> operations = process.getOperations();
+		// Step 3: Create IndustrialProcess
+		List<IOperation> operations = List.of(op1, op2, op3);
+		IndustrialProcess process = new IndustrialProcess("Process01", operations);
 
-		// Calculate average nominal time
-		double totalTime = 0;
-		IOperation fastest = operations.get(0);
-		IOperation slowest = operations.get(0);
+		// === Task 1: Operation Analysis ===
+		double avgTime = operations.stream()
+				.mapToDouble(IOperation::getNominalTimeMinutes)
+				.average()
+				.orElse(0.0);
 
+		IOperation fastest = operations.stream()
+				.min((a, b) -> Double.compare(a.getNominalTimeMinutes(), b.getNominalTimeMinutes()))
+				.orElse(null);
+
+		IOperation slowest = operations.stream()
+				.max((a, b) -> Double.compare(a.getNominalTimeMinutes(), b.getNominalTimeMinutes()))
+				.orElse(null);
+
+		List<IOperation> sorted = operations.stream()
+				.sorted((a, b) -> Double.compare(a.getNominalTimeMinutes(), b.getNominalTimeMinutes()))
+				.collect(Collectors.toList());
+
+		System.out.println("=== Task 1: Operation Analysis ===");
+		System.out.println("Average Operation Time: " + avgTime + " minutes");
+		System.out.println("Fastest Operation: " + (fastest != null ? fastest.getId() : "None"));
+		System.out.println("Slowest Operation: " + (slowest != null ? slowest.getId() : "None"));
+		System.out.println("Sorted Operations by Time:");
+		sorted.forEach(op -> System.out.println(op.getId() + " - " + op.getNominalTimeMinutes() + " min"));
+
+		// === Task 2: AGV Analysis ===
+		List<AGV> allAGVs = process.processResources();
+
+		List<AGV> lowBatteryAGVs = allAGVs.stream()
+				.filter(agv -> agv.getBatteryLoad() < 20.0)
+				.collect(Collectors.toList());
+
+		Map<String, Integer> agvUsageCount = new HashMap<>();
 		for (IOperation op : operations) {
-			totalTime += op.getNominalTimeMinutes();
-			if (op.getNominalTimeMinutes() < fastest.getNominalTimeMinutes()) {
-				fastest = op;
-			}
-			if (op.getNominalTimeMinutes() > slowest.getNominalTimeMinutes()) {
-				slowest = op;
+			for (AGV agv : op.getAGVList()) {
+				agvUsageCount.put(agv.getId(), agvUsageCount.getOrDefault(agv.getId(), 0) + 1);
 			}
 		}
 
-		double averageTime = totalTime / operations.size();
+		List<String> reusedAGVs = agvUsageCount.entrySet().stream()
+				.filter(entry -> entry.getValue() > 1)
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
 
-		// Print results
-		System.out.println("Industrial Process ID: " + process.getId());
-		System.out.println("Average Nominal Time: " + averageTime + " minutes");
-		System.out.println("Fastest Operation: " + fastest.getId() + " (" + fastest.getNominalTimeMinutes() + " min)");
-		System.out.println("Slowest Operation: " + slowest.getId() + " (" + slowest.getNominalTimeMinutes() + " min)");
+		AGV fastestAGV = allAGVs.stream()
+				.max((a, b) -> Float.compare(a.getMaxSpeed(), b.getMaxSpeed()))
+				.orElse(null);
 
-		// Print sorted list by finish time
-		System.out.println("\nOperations sorted by nominal time:");
-		operations.stream()
-				.sorted(Comparator.comparingDouble(IOperation::getNominalTimeMinutes))
-				.forEach(op -> System.out.println(op.getId() + ": " + op.getNominalTimeMinutes() + " min"));
+		System.out.println("\n=== Task 2: AGV Analysis ===");
+		System.out.println("AGVs with low battery (<20%):");
+		if (lowBatteryAGVs.isEmpty()) {
+			System.out.println("None");
+		} else {
+			lowBatteryAGVs.forEach(agv -> System.out.println(agv.getId()));
+		}
+
+		System.out.println("AGVs used in multiple operations:");
+		if (reusedAGVs.isEmpty()) {
+			System.out.println("None");
+		} else {
+			reusedAGVs.forEach(System.out::println);
+		}
+
+		System.out.println("Fastest AGV: " + (fastestAGV != null ? fastestAGV.getId() : "None"));
 	}
 }
