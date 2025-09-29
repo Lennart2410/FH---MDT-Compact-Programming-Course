@@ -9,7 +9,20 @@ Group work assignments for the mandatory Compact Programming Course
     - Problem 3: Niloufar OladzadAbasabadi 7223228
     - Problem 4: Lennart Ziehm 7201519
 ### Self assignment 2
-
+    - Class implementation part 1: Marianne Nosseir 7224660
+        - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
+    - Class implementation part 1: Lennart Ziehm 7201519
+        - Implementation of AGV and Position classes
+    - Self designed analysis task 1: Yasaman OladzadAbasabadi 7223229
+        - Analysis of SingleOperation & IndustrialProcess classes. 
+            - Calculation of the average nominalTimeMinutes of all Operations
+            - Calculation of the fastest and the slowest Operation
+            - Printing a sorted list in the order of finish time of each SingleOperation
+    - Self designed analysis task 2: Niloufar OladzadAbasabadi 7223228
+        - Analysis of the AGV class. Test for checking:
+            - if any AGV has less than 20 percent of battery left
+            - if any AGV is used multiple time for different operations
+            - which AGV is the fastest overall
 ### Self assignment 3
 
 ### Homwork assignment 1
