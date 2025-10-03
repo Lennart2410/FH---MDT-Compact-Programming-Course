@@ -3,7 +3,6 @@ package SelfAssignment3;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Process holding N operations */
 public class IndustrialProcess {
     private final String id;
     private final List<IOperation> operations;
@@ -28,9 +27,8 @@ public class IndustrialProcess {
     public List<Resource> processResources() {
         List<Resource> resources = new ArrayList<>();
         for (IOperation operation : operations) {
-            resources.addAll(operation.getAGVList());
+            resources.addAll(operation.getResources());
         }
         return resources;
     }
-
 }

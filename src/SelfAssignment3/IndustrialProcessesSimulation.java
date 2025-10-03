@@ -1,7 +1,6 @@
 package SelfAssignment3;
 
 import java.time.LocalDate;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,28 +9,23 @@ import java.util.stream.Collectors;
 public class IndustrialProcessesSimulation {
 
     public static void main(String[] args) {
-
         performSelfAssignmentThreeTasks();
-        //performSelfAssignmentTwoTasks();
-
+        // performSelfAssignmentTwoTasks();
     }
 
     private static void performSelfAssignmentTwoTasks() {
-        // Step 1: Create AGVs
         AGV agv_01 = new AGV("A01", 100.0, 15.0, new Position(40, 40), 10, 4.0f, 2.0f, LocalDate.of(2025, 10, 3));
         AGV agv_02 = new AGV("A02", 50.0, 20.0, new Position(10, 78), 12, 10.0f, 6.0f, LocalDate.now());
         AGV agv_03 = new AGV("A03", 85.0, 5.0, new Position(1, 1), 10, 2.0f, 1.0f, LocalDate.of(2020, 1, 1));
 
-        // Step 2: Create Operations
-        SingleOperation op1 = new SingleOperation("OP01", "Transport goods", 30.0, List.of(agv_01, agv_02));
-        SingleOperation op2 = new SingleOperation("OP02", "Load materials", 45.0, List.of(agv_03));
-        SingleOperation op3 = new SingleOperation("OP03", "Unload items", 20.0, List.of(agv_01));
+        TransportOperation op1 = new TransportOperation("OP01", "Transport goods", 100.0, 50.0,
+                List.of(agv_01, agv_02));
+        TransportOperation op2 = new TransportOperation("OP02", "Load materials", 45.0, 30.0, List.of(agv_03));
+        TransportOperation op3 = new TransportOperation("OP03", "Unload items", 50.0, 20.0, List.of(agv_01));
 
-        // Step 3: Create IndustrialProcess
         List<IOperation> operations = List.of(op1, op2, op3);
         IndustrialProcess process = new IndustrialProcess("Process01", operations);
 
-        // === Task 1: Operation Analysis ===
         double avgTime = operations.stream()
                 .mapToDouble(IOperation::getNominalTimeMinutes)
                 .average()
@@ -56,10 +50,9 @@ public class IndustrialProcessesSimulation {
         System.out.println("Sorted Operations by Time:");
         sorted.forEach(op -> System.out.println(op.getId() + " - " + op.getNominalTimeMinutes() + " min"));
 
-        // === Task 2: AGV Analysis ===
-        List<Resource> allAGVs = process.processResources();
+        List<Resource> allResources = process.processResources();
 
-        List<AGV> lowBatteryAGVs = allAGVs.stream()
+        List<AGV> lowBatteryAGVs = allResources.stream()
                 .filter(resource -> resource instanceof AGV)
                 .map(resource -> (AGV) resource)
                 .filter(agv -> agv.getBatteryLoad() < 20.0)
@@ -67,8 +60,10 @@ public class IndustrialProcessesSimulation {
 
         Map<String, Integer> agvUsageCount = new HashMap<>();
         for (IOperation op : operations) {
-            for (Resource agv : op.getAGVList()) {
-                agvUsageCount.put(agv.getId(), agvUsageCount.getOrDefault(agv.getId(), 0) + 1);
+            for (Resource resource : op.getResources()) {
+                if (resource instanceof AGV) {
+                    agvUsageCount.put(resource.getId(), agvUsageCount.getOrDefault(resource.getId(), 0) + 1);
+                }
             }
         }
 
@@ -77,7 +72,7 @@ public class IndustrialProcessesSimulation {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        AGV fastestAGV = allAGVs.stream()
+        AGV fastestAGV = allResources.stream()
                 .filter(resource -> resource instanceof AGV)
                 .map(resource -> (AGV) resource)
                 .max((a, b) -> Float.compare(a.getMaxSpeed(), b.getMaxSpeed()))
@@ -106,15 +101,21 @@ public class IndustrialProcessesSimulation {
         AGV agv_02 = new AGV("A02", 50.0, 20.0, new Position(10, 78), 12, 10.0f, 6.0f, LocalDate.now());
         AGV agv_03 = new AGV("A03", 85.0, 5.0, new Position(1, 1), 10, 2.0f, 1.0f, LocalDate.of(2020, 1, 1));
 
-        // Step 2: Create Operations
-        SingleOperation op1 = new SingleOperation("OP01", "Transport goods", 30.0, List.of(agv_01, agv_02));
-        SingleOperation op2 = new SingleOperation("OP02", "Load materials", 45.0, List.of(agv_03));
-        SingleOperation op3 = new SingleOperation("OP03", "Unload items", 20.0, List.of(agv_01));
+        HumanResource worker_01 = new HumanResource("H01", "Ali", "Loader", 3);
+        HumanResource worker_02 = new HumanResource("H02", "Sara", "Inspector", 5);
 
-        // Step 3: Create IndustrialProcess
-        List<IOperation> operations = List.of(op1, op2, op3);
+        TransportOperation op1 = new TransportOperation("OP01", "Transport goods", 100.0, 50.0,
+                List.of(agv_01, agv_02));
+        HumanOperation op2 = new HumanOperation("OP02", "Load materials", List.of(worker_01));
+        TransportOperation op3 = new TransportOperation("OP03", "Unload items", 50.0, 20.0, List.of(agv_01));
+        HumanOperation op4 = new HumanOperation("OP04", "Inspect items", List.of(worker_02));
+
+        List<IOperation> operations = List.of(op1, op2, op3, op4);
         IndustrialProcess process = new IndustrialProcess("Process01", operations);
 
-        System.out.println(agv_01);
+        System.out.println("=== Task 3: Simulation Output ===");
+        System.out.println("Total Process Duration: " + process.processDuration() + " minutes");
+        System.out.println("Resources Used:");
+        process.processResources().forEach(r -> System.out.println(r.getId()));
     }
 }
