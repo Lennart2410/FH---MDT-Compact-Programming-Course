@@ -29,7 +29,11 @@ public class IndustrialProcessesSimulation {
 
         // Step 3: Create IndustrialProcess
         List<IOperation> operations = List.of(op1, op2, op3);
-        IndustrialProcess process = new IndustrialProcess("Process01", operations);
+       
+        IndustrialProcess Iprocess = new IndustrialProcess("Process01");
+        Iprocess.addOperation(op1); 
+        Iprocess.addOperation(op2);
+        Iprocess.addOperation(op3);
 
         // === Task 1: Operation Analysis ===
         double avgTime = operations.stream()
@@ -57,7 +61,7 @@ public class IndustrialProcessesSimulation {
         sorted.forEach(op -> System.out.println(op.getId() + " - " + op.getNominalTimeMinutes() + " min"));
 
         // === Task 2: AGV Analysis ===
-        List<Resource> allAGVs = process.processResources();
+        List<Resource> allAGVs = Iprocess.processResources();
 
         List<AGV> lowBatteryAGVs = allAGVs.stream()
                 .filter(resource -> resource instanceof AGV)
@@ -112,8 +116,10 @@ public class IndustrialProcessesSimulation {
         SingleOperation op3 = new SingleOperation("OP03", "Unload items", 20.0, List.of(agv_01));
 
         // Step 3: Create IndustrialProcess
-        List<IOperation> operations = List.of(op1, op2, op3);
-        IndustrialProcess process = new IndustrialProcess("Process01", operations);
+        IndustrialProcess Iprocess = new IndustrialProcess("Process01");
+        Iprocess.addOperation(op1); 
+        Iprocess.addOperation(op2);
+        Iprocess.addOperation(op3);
 
         System.out.println(agv_01);
     }
