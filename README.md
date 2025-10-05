@@ -24,7 +24,10 @@ Group work assignments for the mandatory Compact Programming Course
             - if any AGV is used multiple time for different operations
             - which AGV is the fastest overall
 ### Self assignment 3
-
+    - Lennart Ziehm 7201519: Implementation of HardwareResources, NonHumanResources, Resource + UML-Diagram
+    - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
+    - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
+    - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
 ### Homwork assignment 1
 
 ### Homwork assignment 2
