@@ -12,7 +12,8 @@ public abstract class HardwareResource extends NonHumanResource {
     public HardwareResource(String id, Position position, LocalDate purchaseDate) {
         super(id, purchaseDate);
         this.position = position;
-        this.serialNumber = String.valueOf(new Random().nextLong(999999999 - 100000000 + 1) + 100000000);
+        this.serialNumber = String.format("%09d", new Random().nextInt(999999999));
+
     }
 
     public String getSerialNumber() {
