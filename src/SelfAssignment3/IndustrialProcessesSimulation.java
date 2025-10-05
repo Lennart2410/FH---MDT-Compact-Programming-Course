@@ -30,10 +30,10 @@ public class IndustrialProcessesSimulation {
         // Step 3: Create IndustrialProcess
         List<IOperation> operations = List.of(op1, op2, op3);
 
-        IndustrialProcess Iprocess = new IndustrialProcess("Process01");
-        Iprocess.addOperation(op1);
-        Iprocess.addOperation(op2);
-        Iprocess.addOperation(op3);
+        IndustrialProcess industrialProcess = new IndustrialProcess("Process01");
+        industrialProcess.addOperation(op1);
+        industrialProcess.addOperation(op2);
+        industrialProcess.addOperation(op3);
 
         // === Task 1: Operation Analysis ===
         double avgTime = operations.stream()
@@ -61,7 +61,7 @@ public class IndustrialProcessesSimulation {
         sorted.forEach(op -> System.out.println(op.getId() + " - " + op.getNominalTimeMinutes() + " min"));
 
         // === Task 2: AGV Analysis ===
-        List<Resource> allResources = process.processResources();
+        List<Resource> allResources = industrialProcess.processResources();
 
         List<AGV> lowBatteryAGVs = allResources.stream()
                 .filter(resource -> resource instanceof AGV)
@@ -117,12 +117,12 @@ public class IndustrialProcessesSimulation {
 
         TransportOperation op1 = new TransportOperation("OP01", "Transport goods", 100.0, 50.0,
                 List.of(agv_01, agv_02));
-        HumanOperation op2 = new HumanOperation("OP02", "Load materials", List.of(worker_01));
+        HumanOperation op2 = new HumanOperation("OP02", "Load materials","Loading",2, List.of(worker_01));
         TransportOperation op3 = new TransportOperation("OP03", "Unload items", 50.0, 20.0, List.of(agv_01));
-        HumanOperation op4 = new HumanOperation("OP04", "Inspect items", List.of(worker_02));
+        HumanOperation op4 = new HumanOperation("OP04", "Inspect items","Inspection",3, List.of(worker_02));
 
         List<IOperation> operations = List.of(op1, op2, op3, op4);
-        IndustrialProcess process = new IndustrialProcess("Process01", operations);
+        IndustrialProcess process = new IndustrialProcess("Process01",operations);
 
         System.out.println("=== Task 3: Simulation Output ===");
         System.out.println("Total Process Duration: " + process.processDuration() + " minutes");

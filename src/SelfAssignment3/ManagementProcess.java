@@ -22,7 +22,7 @@ public class ManagementProcess extends Process{
 	public List<Resource> processResources() {
 		List<Resource> resources = new ArrayList<>();
         for (IOperation operation : getOperations()) {
-            resources.addAll(operation.getAGVList());
+            resources.addAll(operation.getResources());
         }
         return resources;
 	}

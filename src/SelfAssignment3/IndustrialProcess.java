@@ -7,9 +7,14 @@ public class IndustrialProcess extends Process {
 
     private final List<IOperation> operations;
 
-	protected IndustrialProcess(String id) {
+    protected IndustrialProcess(String id) {
+        super(id);
+        this.operations = new ArrayList<>();
+    }
+
+	protected IndustrialProcess(String id, List<IOperation> initialOperations) {
 		super(id);
-        this.operations = operations;
+        this.operations = initialOperations;
 	}
 
 
