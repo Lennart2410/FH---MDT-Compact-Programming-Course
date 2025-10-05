@@ -9,7 +9,12 @@ public class HumanOperation extends IOperation {
     public HumanOperation(String id, String description, String taskType, int skillLevel, List<Resource> resources) {
         super(id, description, resources);
         this.taskType = taskType;
-        this.skillLevel = skillLevel;
+        this.skillLevel = resources.stream()
+                .filter(r -> r instanceof HumanResource)
+                .map(r -> ((HumanResource) r).getSkillLevel())
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(1);
     }
 
     @Override

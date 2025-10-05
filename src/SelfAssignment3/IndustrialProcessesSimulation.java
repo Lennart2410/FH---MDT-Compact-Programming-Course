@@ -19,7 +19,6 @@ public class IndustrialProcessesSimulation {
         AGV agv_02 = new AGV("A02", 50.0, 20.0, new Position(10, 78), 12, 10.0f, 6.0f, LocalDate.now());
         AGV agv_03 = new AGV("A03", 85.0, 5.0, new Position(1, 1), 10, 2.0f, 1.0f, LocalDate.of(2020, 1, 1));
 
-        // Step 2: Create Operations
         TransportOperation op1 = new TransportOperation("OP01", "Transport goods", 100.0, 50.0,
                 List.of(agv_01, agv_02));
         TransportOperation op2 = new TransportOperation("OP02", "Load materials", 45.0, 30.0, List.of(agv_03));
@@ -106,14 +105,16 @@ public class IndustrialProcessesSimulation {
         AGV agv_02 = new AGV("A02", 50.0, 20.0, new Position(10, 78), 12, 10.0f, 6.0f, LocalDate.now());
         AGV agv_03 = new AGV("A03", 85.0, 5.0, new Position(1, 1), 10, 2.0f, 1.0f, LocalDate.of(2020, 1, 1));
 
-        // Step 2: Create Operations
+        HumanResource worker_01 = new HumanResource("H01", "Ali", "Loader", 3);
+        HumanResource worker_02 = new HumanResource("H02", "Sara", "Inspector", 5);
+
         TransportOperation op1 = new TransportOperation("OP01", "Transport goods", 100.0, 50.0,
                 List.of(agv_01, agv_02));
-        HumanOperation op2 = new HumanOperation("OP02", "Load materials", "Loading", 3, List.of(agv_03));
+        HumanOperation op2 = new HumanOperation("OP02", "Load materials", List.of(worker_01));
         TransportOperation op3 = new TransportOperation("OP03", "Unload items", 50.0, 20.0, List.of(agv_01));
+        HumanOperation op4 = new HumanOperation("OP04", "Inspect items", List.of(worker_02));
 
-        // Step 3: Create IndustrialProcess
-        List<IOperation> operations = List.of(op1, op2, op3);
+        List<IOperation> operations = List.of(op1, op2, op3, op4);
         IndustrialProcess process = new IndustrialProcess("Process01", operations);
 
         System.out.println("=== Task 3: Simulation Output ===");

@@ -28,8 +28,9 @@ public class IndustrialProcess {
     public List<Resource> processResources() {
         List<Resource> resources = new ArrayList<>();
         for (IOperation operation : operations) {
-            resources.addAll(operation.getResources()); // ✅ updated method name
+            resources.addAll(operation.getResources());
         }
         return resources;
     }
+
 }
