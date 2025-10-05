@@ -6,14 +6,14 @@ public class SingleOperation implements IOperation {
 	private final String id;
 	private final String description;
 	private final double nominalTimeMinutes;
-	private final List<Resource> agvResources;
+	private final List<Resource> resources;
 
 	public SingleOperation(String id, String description,
 			double nominalTimeMinutes, List<Resource> agvResources) {
 		this.id = id;
 		this.description = description;
 		this.nominalTimeMinutes = nominalTimeMinutes;
-		this.agvResources = agvResources;
+		this.resources = agvResources;
 	}
 
 	public String getId() {
@@ -25,8 +25,8 @@ public class SingleOperation implements IOperation {
 	}
 
 	@Override
-	public List<Resource> getAGVList() {
-		return agvResources;
+	public List<Resource> getResourceList() {
+		return resources;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class SingleOperation implements IOperation {
 	}
 
 	@Override
-	public int getAgvRequired() {
-		return agvResources.size();
+	public int getResourcesRequired() {
+		return resources.size();
 	}
 }

@@ -67,7 +67,7 @@ public class IndustrialProcessesSimulation {
 
         Map<String, Integer> agvUsageCount = new HashMap<>();
         for (IOperation op : operations) {
-            for (Resource agv : op.getAGVList()) {
+            for (Resource agv : op.getResourceList()) {
                 agvUsageCount.put(agv.getId(), agvUsageCount.getOrDefault(agv.getId(), 0) + 1);
             }
         }

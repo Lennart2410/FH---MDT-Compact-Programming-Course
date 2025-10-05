@@ -5,9 +5,9 @@ import java.util.List;
 public interface IOperation {
 	    String getId();
 	    String getDescription();
-		List<Resource> getAGVList();
+		List<Resource> getResourceList();
 	    /** How many AGVs this step needs while it runs. */
-	    int getAgvRequired();
+	    int getResourcesRequired();
 	    /** Nominal duration in minutes. */
 	    double getNominalTimeMinutes();
 }
