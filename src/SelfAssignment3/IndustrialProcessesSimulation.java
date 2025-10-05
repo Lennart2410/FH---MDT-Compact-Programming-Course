@@ -1,6 +1,7 @@
 package SelfAssignment3;
 
 import java.time.LocalDate;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,10 @@ import java.util.stream.Collectors;
 public class IndustrialProcessesSimulation {
 
     public static void main(String[] args) {
+
         performSelfAssignmentThreeTasks();
-        // performSelfAssignmentTwoTasks();
+        //performSelfAssignmentTwoTasks();
+
     }
 
     private static void performSelfAssignmentTwoTasks() {
@@ -26,7 +29,11 @@ public class IndustrialProcessesSimulation {
 
         // Step 3: Create IndustrialProcess
         List<IOperation> operations = List.of(op1, op2, op3);
-        IndustrialProcess process = new IndustrialProcess("Process01", operations);
+
+        IndustrialProcess Iprocess = new IndustrialProcess("Process01");
+        Iprocess.addOperation(op1);
+        Iprocess.addOperation(op2);
+        Iprocess.addOperation(op3);
 
         // === Task 1: Operation Analysis ===
         double avgTime = operations.stream()
