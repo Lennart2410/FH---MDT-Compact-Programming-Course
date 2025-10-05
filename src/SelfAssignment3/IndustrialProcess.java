@@ -3,34 +3,36 @@ package SelfAssignment3;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Process holding N operations */
-public class IndustrialProcess {
-    private final String id;
+public class IndustrialProcess extends Process {
+
     private final List<IOperation> operations;
 
-    public IndustrialProcess(String id, List<IOperation> operations) {
-        this.id = id;
-        this.operations = operations;
+    protected IndustrialProcess(String id) {
+        super(id);
+        this.operations = new ArrayList<>();
     }
 
-    public String getId() {
-        return id;
-    }
+	protected IndustrialProcess(String id, List<IOperation> initialOperations) {
+		super(id);
+        this.operations = initialOperations;
+	}
 
-    public double processDuration() {
-        double totalTime = 0.0;
-        for (IOperation operation : operations) {
+
+	@Override
+	public double processDuration() {
+		double totalTime = 0.0;
+        for (IOperation operation : getOperations()) {
             totalTime += operation.getNominalTimeMinutes();
         }
         return totalTime;
-    }
+	}
 
     public List<Resource> processResources() {
         List<Resource> resources = new ArrayList<>();
         for (IOperation operation : operations) {
-            resources.addAll(operation.getAGVList());
+            resources.addAll(operation.getResources());
         }
         return resources;
-    }
+	}
 
 }
