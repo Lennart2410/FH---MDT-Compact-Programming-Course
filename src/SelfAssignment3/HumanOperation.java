@@ -6,15 +6,16 @@ public class HumanOperation extends IOperation {
     private String taskType;
     private int skillLevel;
 
-    public HumanOperation(String id, String description, String taskType, int skillLevel, List<Resource> resources) {
+    public HumanOperation(String id, String description, List<Resource> resources) {
         super(id, description, resources);
-        this.taskType = taskType;
+        this.taskType = "General";
+
         this.skillLevel = resources.stream()
                 .filter(r -> r instanceof HumanResource)
                 .map(r -> ((HumanResource) r).getSkillLevel())
                 .mapToInt(Integer::intValue)
                 .max()
-                .orElse(1);
+                .orElse(1); // fallback if no HumanResource is present
     }
 
     @Override
