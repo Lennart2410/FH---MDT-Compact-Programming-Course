@@ -28,7 +28,7 @@ Group work assignments for the mandatory Compact Programming Course
     - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
     - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
     - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
-## UML-Diagram of Self Assignment 3
+#### UML-Diagram of Self Assignment 3
 ![UML-Diagram of Self Assignment 3](./src/SelfAssignment3/UML-SA.drawio.png)
 
  *All Getter and Setter are represented by <<get>> or <<set>> in order to keep the UML-Diagram structured.
