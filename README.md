@@ -11,7 +11,7 @@ Group work assignments for the mandatory Compact Programming Course
 ### Self assignment 2
     - Class implementation part 1: Marianne Nosseir 7224660
         - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
-    - Class implementation part 1: Lennart Ziehm 7201519
+    - Class implementation part 2: Lennart Ziehm 7201519
         - Implementation of AGV and Position classes
     - Self designed analysis task 1: Yasaman OladzadAbasabadi 7223229
         - Analysis of SingleOperation & IndustrialProcess classes. 
