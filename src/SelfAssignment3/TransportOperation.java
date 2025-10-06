@@ -20,7 +20,7 @@ public class TransportOperation extends IOperation {
                 .map(r -> ((AGV) r).getActSpeed())
                 .mapToDouble(Float::doubleValue)
                 .average()
-                .orElse(1.0);
+                .orElse(1.0); // fallback speed
         return distance / avgSpeed;
     }
 
