@@ -1,5 +1,6 @@
 package CapstoneProject.agv;
 
+import CapstoneProject.Order;
 import CapstoneProject.Warehouse;
 
 import java.time.LocalTime;
@@ -17,7 +18,7 @@ public class AgvTaskManager implements Runnable{
         this.warehouse = warehouse;
     }
 
-    public void travelWithItems(AgvTask agvTask) {
+    public void travelWithOrder(AgvTask agvTask) {
         System.out.println("["+ getCurrentTime()+"] - "+"[AGV]: Traveling with items! Going total distance of " + agvTask.getTravelDistanceMeter() + "m. It takes " + (agvTask.getTaskDurationMS() / 1000) + " seconds!");
         try {
             Thread.sleep(agvTask.getTaskDurationMS());
@@ -34,9 +35,10 @@ public class AgvTaskManager implements Runnable{
     @Override
     public void run() {
         AgvTask agvTask = queue.poll();
+
         if (agvTask != null) {
             // Here we can add multiple Threads (Depeding on how many workers we currently have)
-            travelWithItems(agvTask);
+            travelWithOrder(agvTask);
         } else {
             System.out.println("["+ getCurrentTime()+"] - "+"[AGV]: No current jobs!");
         }

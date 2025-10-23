@@ -1,14 +1,18 @@
 package CapstoneProject.shelve;
 
-public class ShelveTask {
+import CapstoneProject.Order;
+
+public class PickingTask {
 
     private final int shelveNumber;
     private final int taskDurationMS;
+    private Order order;
 
 
-    public ShelveTask(int shelveNumber, int taskDurationMS) {
+    public PickingTask(int shelveNumber, int taskDurationMS, Order order) {
         this.shelveNumber = shelveNumber;
         this.taskDurationMS = taskDurationMS;
+        this.order = order;
     }
 
     public int getShelveNumber() {
@@ -17,5 +21,9 @@ public class ShelveTask {
 
     public int getTaskDurationMS() {
         return taskDurationMS;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }
