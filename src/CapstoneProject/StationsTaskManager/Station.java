@@ -22,8 +22,8 @@ public abstract class Station implements IStation {
     public final void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Task j = in.take();                // waits if empty
-                Task next = process(j);
+                Task task= in.take();                // waits if empty
+                Task next = process(task);
                 if (next != null && out != null) {
                     out.put(next);                // waits if full (back-pressure)
                 }
