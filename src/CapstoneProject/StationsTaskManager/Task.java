@@ -16,10 +16,6 @@ public class Task {
         this.orderStatus = orderStatus;
     }
 
-    /** Convenience factory for a fresh Task (id auto-generated). */
-    public static Task fresh(String orderNo) {
-        return new Task(UUID.randomUUID().toString(), orderNo, OrderStatus.ORDERED);
-    }
 
     public String getId()     { return id; }
     public String getOrderNo(){ return orderNo; }
