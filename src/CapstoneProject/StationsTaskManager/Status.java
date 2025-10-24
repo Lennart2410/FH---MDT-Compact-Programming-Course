@@ -1,6 +1,6 @@
 package CapstoneProject.StationsTaskManager;
 
-public enum OrderStatus {
+public enum Status {
     ORDERED,     // just created
     PICKING,     // being picked
     PACKING,     // being packed
