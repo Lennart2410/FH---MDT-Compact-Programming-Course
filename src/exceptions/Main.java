@@ -1,0 +1,27 @@
+package exceptions;
+
+public class Main {
+    public static void main(String[] args) {
+        // Topic 1: Handling Multiple Exceptions
+        MultiExceptionHandler handler = new MultiExceptionHandler();
+        handler.process("10");     // Valid input
+        handler.process("0");      // Causes ArithmeticException
+        handler.process("abc");    // Causes NumberFormatException
+
+        // Topic 2: Re-throwing Exceptions
+        ReThrower reThrower = new ReThrower();
+        try {
+            reThrower.riskyOperation("abc"); // Will cause NumberFormatException
+        } catch (Exception e) {
+            System.out.println("Handled in main: " + e.getClass().getSimpleName());
+        }
+
+        // Topic 3: Resource Management
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.readFile("sample.txt");
+
+        // Topic 4: Chaining Exceptions
+        ChainExceptionDemo chainDemo = new ChainExceptionDemo();
+        chainDemo.triggerChain();
+    }
+}
