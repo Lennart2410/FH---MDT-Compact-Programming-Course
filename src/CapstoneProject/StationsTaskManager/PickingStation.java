@@ -9,6 +9,6 @@ public class PickingStation extends Station {
 
     @Override
     protected Task process(Task task) throws Exception {
-        return null;
+        return task;
     }
 }
