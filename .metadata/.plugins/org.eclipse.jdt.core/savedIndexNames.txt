@@ -1,0 +1,21 @@
+INDEX VERSION 1.134+E:\java projects\HA1_StorageTaskSystem\.metadata\.plugins\org.eclipse.jdt.core
+1022700608.index
+3991735121.index
+1897790081.index
+692898009.index
+1657021880.index
+3154800696.index
+3335802815.index
+1865797976.index
+1083379771.index
+845978923.index
+2707450467.index
+3031946808.index
+360852563.index
+2647640364.index
+2993893994.index
+2406767155.index
+2558719051.index
+2337881715.index
+993843754.index
+930815387.index

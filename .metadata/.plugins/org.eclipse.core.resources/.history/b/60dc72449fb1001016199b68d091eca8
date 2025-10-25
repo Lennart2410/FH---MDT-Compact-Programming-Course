@@ -1,0 +1,11 @@
+package exceptions;
+
+public class Main {
+    public static void main(String[] args) {
+        MultiExceptionHandler handler = new MultiExceptionHandler();
+
+        handler.process("10");     // Valid input
+        handler.process("0");      // Causes ArithmeticException
+        handler.process("abc");    // Causes NumberFormatException
+    }
+}

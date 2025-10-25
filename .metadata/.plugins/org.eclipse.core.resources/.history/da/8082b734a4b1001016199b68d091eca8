@@ -1,0 +1,38 @@
+package exceptions;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ReThrowerTest {
+
+    @Test
+    public void testValidInput() {
+        ReThrower reThrower = new ReThrower();
+        assertDoesNotThrow(() -> reThrower.riskyOperation("25"));
+    }
+
+    @Test
+    public void testNullInput() {
+        ReThrower reThrower = new ReThrower();
+        Exception exception = assertThrows(NullPointerException.class, () -> reThrower.riskyOperation(null));
+        assertEquals("Input is null", exception.getMessage());
+    }
+
+    @Test
+    public void testInvalidNumber() {
+        ReThrower reThrower = new ReThrower();
+        assertThrows(NumberFormatException.class, () -> reThrower.riskyOperation("abc"));
+    }
+
+    @Test
+    public void testNegativeNumber() {
+        ReThrower reThrower = new ReThrower();
+        assertDoesNotThrow(() -> reThrower.riskyOperation("-5"));
+    }
+
+    @Test
+    public void testEmptyString() {
+        ReThrower reThrower = new ReThrower();
+        assertThrows(NumberFormatException.class, () -> reThrower.riskyOperation(""));
+    }
+}

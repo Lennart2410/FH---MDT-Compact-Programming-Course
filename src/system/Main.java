@@ -1,0 +1,14 @@
+package system;
+
+public class Main {
+    public static void main(String[] args) {
+        StorageVehicle truck1 = new StorageVehicle("truck1");
+        TaskManager manager = new TaskManager();
+        LogManager logManager = new LogManager();
+
+        manager.assignTask(truck1, "Deliver goods to Station A");
+        manager.assignTask(truck1, "Recharge battery");
+
+        logManager.findLog("truck1");
+    }
+}
