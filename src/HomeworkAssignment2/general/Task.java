@@ -6,7 +6,7 @@ import java.util.UUID;
  * Immutable message that moves between stations via queues.
  */
 
-public class Task {
+public abstract class Task {
     private final String id;
     private final Order order;
 
