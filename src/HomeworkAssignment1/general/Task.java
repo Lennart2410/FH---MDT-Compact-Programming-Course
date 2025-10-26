@@ -6,7 +6,7 @@ import java.util.UUID;
  * Immutable message that moves between stations via queues.
  */
 
-public class Task {
+public abstract class Task {
     private final String id;
     private final Order order;
 
@@ -15,7 +15,7 @@ public class Task {
      * Create a new task at a given status
      */
     public Task(Order order) {
-        this.id = "TSK"+UUID.randomUUID();
+        this.id = "TSK00"+UUID.randomUUID();
         this.order = order;
     }
 
