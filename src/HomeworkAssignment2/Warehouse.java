@@ -1,16 +1,16 @@
-package HomeworkAssignment1;
+package HomeworkAssignment2;
 
 
-import HomeworkAssignment1.agv.AGVRunner;
-import HomeworkAssignment1.agv.AgvTask;
-import HomeworkAssignment1.general.Item;
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.loading.LoadingStation;
-import HomeworkAssignment1.loading.LoadingTask;
-import HomeworkAssignment1.packing.PackingStation;
-import HomeworkAssignment1.packing.PackingTask;
-import HomeworkAssignment1.picking.PickingStation;
-import HomeworkAssignment1.picking.PickingTask;
+import HomeworkAssignment2.agv.AGVRunner;
+import HomeworkAssignment2.agv.AgvTask;
+import HomeworkAssignment2.general.Item;
+import HomeworkAssignment2.general.Order;
+import HomeworkAssignment2.loading.LoadingStation;
+import HomeworkAssignment2.loading.LoadingTask;
+import HomeworkAssignment2.packing.PackingStation;
+import HomeworkAssignment2.packing.PackingTask;
+import HomeworkAssignment2.picking.PickingStation;
+import HomeworkAssignment2.picking.PickingTask;
 
 import java.util.List;
 

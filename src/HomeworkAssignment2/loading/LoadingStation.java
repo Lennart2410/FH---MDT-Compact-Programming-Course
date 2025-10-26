@@ -1,7 +1,7 @@
-package HomeworkAssignment1.loading;
+package HomeworkAssignment2.loading;
 
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.general.Station;
+import HomeworkAssignment2.general.Order;
+import HomeworkAssignment2.general.Station;
 
 public class LoadingStation extends Station<LoadingTask> {
 

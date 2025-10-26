@@ -1,7 +1,7 @@
-package HomeworkAssignment1.agv;
+package HomeworkAssignment2.agv;
 
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.general.Station;
+import HomeworkAssignment2.general.Order;
+import HomeworkAssignment2.general.Station;
 
 public class AGVRunner extends Station<AgvTask> {
 

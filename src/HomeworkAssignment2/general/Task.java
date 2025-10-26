@@ -1,4 +1,4 @@
-package HomeworkAssignment1.general;
+package HomeworkAssignment2.general;
 
 import java.util.UUID;
 

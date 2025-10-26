@@ -1,4 +1,4 @@
-package HomeworkAssignment1;
+package HomeworkAssignment2;
 
 
 public class WarehouseRunner {
