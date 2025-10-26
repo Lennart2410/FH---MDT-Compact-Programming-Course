@@ -1,7 +1,7 @@
-package HomeworkAssignment1.agv;
+package HomeworkAssignment2.agv;
 
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.general.Task;
+import HomeworkAssignment2.general.Order;
+import HomeworkAssignment2.general.Task;
 
 public class AgvTask extends Task {
     String startingLocation;

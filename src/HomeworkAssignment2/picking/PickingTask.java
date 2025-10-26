@@ -1,7 +1,7 @@
-package HomeworkAssignment1.picking;
+package HomeworkAssignment2.picking;
 
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.general.Task;
+import HomeworkAssignment2.general.Order;
+import HomeworkAssignment2.general.Task;
 
 
 public class PickingTask extends Task {
