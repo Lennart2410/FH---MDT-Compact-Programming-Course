@@ -7,6 +7,7 @@ import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
 import HomeworkAssignment1.loading.LoadingStation;
 import HomeworkAssignment1.loading.LoadingTask;
+import HomeworkAssignment1.packing.OrderBoxingService;
 import HomeworkAssignment1.packing.PackingStation;
 import HomeworkAssignment1.packing.PackingTask;
 import HomeworkAssignment1.picking.PickingStation;
@@ -41,9 +42,10 @@ public class Warehouse {
         order = agvRunner.process(new AgvTask(order,"shelves","packing-station"));
 
         // Packaging the items inside the order
-        order = packingStation.process(new PackingTask(order));
+        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order)));
 
         // Bringing items from the packaging to the loading
+        // Note: to access the parcel from packaging station, use order.getOrderParcels()
         order = agvRunner.process(new AgvTask(order,"packing-station","loading-station"));
 
         // Loading items into the delivery vehicle
