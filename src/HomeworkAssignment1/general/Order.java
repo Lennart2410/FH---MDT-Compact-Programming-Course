@@ -1,5 +1,7 @@
 package HomeworkAssignment1.general;
 
+import HomeworkAssignment1.packing.Parcel;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -10,9 +12,9 @@ public class Order {
     private final String destination;
     private final String orderNumber;
     private  OrderStatusEnum orderStatusEnum;
-    private Object orderParcels = null;
+    private List<Parcel> orderParcels = null;
     private double totalWeight;
-    public void setOrderParcels(Object orderParcels) {
+    public void setOrderParcels(List<Parcel> orderParcels) {
         this.orderParcels = orderParcels;
     }
 
@@ -32,7 +34,7 @@ public class Order {
         return orderNumber;
     }
 
-    public Object getOrderParcels() {
+    public List<Parcel> getOrderParcels() {
         return orderParcels;
     }
 
