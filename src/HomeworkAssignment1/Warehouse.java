@@ -7,11 +7,16 @@ import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
 import HomeworkAssignment1.loading.LoadingStation;
 import HomeworkAssignment1.loading.LoadingTask;
+import HomeworkAssignment1.logging.LogFiles;
+import HomeworkAssignment1.packing.OrderBoxingService;
 import HomeworkAssignment1.packing.PackingStation;
 import HomeworkAssignment1.packing.PackingTask;
 import HomeworkAssignment1.picking.PickingStation;
 import HomeworkAssignment1.picking.PickingTask;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -20,7 +25,8 @@ public class Warehouse {
     PackingStation packingStation  = new PackingStation();
     AGVRunner agvRunner = new AGVRunner();
     LoadingStation loadingStation  = new LoadingStation();
-
+    Path logsRoot = Paths.get("logs");
+    LogFiles storage = new LogFiles(logsRoot);
     public Warehouse() {
         Item item1 = new Item("Phone");
         Item item2 = new Item("Book");
@@ -41,9 +47,27 @@ public class Warehouse {
         order = agvRunner.process(new AgvTask(order,"shelves","packing-station"));
 
         // Packaging the items inside the order
-        order = packingStation.process(new PackingTask(order));
+        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), storage, logsRoot));
+        List<Path> hits = null;
+        try {
+            hits = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]" + java.time.LocalDate.now() + "\\.log$");
+            hits.forEach(System.out::println);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+// Any label for order A100:
+        List<Path> labels = null;
+        try {
+            labels = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]labels[/\\\\]A100\\.txt$");
+            labels.forEach(System.out::println);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // Bringing items from the packaging to the loading
+        // Note: to access the parcel from packaging station, use order.getOrderParcels()
         order = agvRunner.process(new AgvTask(order,"packing-station","loading-station"));
 
         // Loading items into the delivery vehicle

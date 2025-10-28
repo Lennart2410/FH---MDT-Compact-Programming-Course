@@ -20,6 +20,11 @@ public class LogFiles {
 
     public LogFiles(Path baseDir) { this.baseDir = baseDir; }
 
+    public Path logSystem(String actor, String event, String detail) throws IOException {
+        Path file = pathFor("system", null, LocalDate.now());
+        appendLine(file, line(actor, event, detail));
+        return file;
+    }
 
     private String line(String actor, String event, String detail) {
         return String.format("%s,%s,%s,%s", TIME.format(LocalTime.now()), actor, event, detail);
