@@ -18,14 +18,15 @@ public class LogFiles {
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public LogFiles(Path baseDir) { this.baseDir = baseDir; }
+    public LogFiles(Path baseDir) {
+        this.baseDir = baseDir;
+    }
 
-
-    private String line(String actor, String event, String detail) {
+    public String line(String actor, String event, String detail) {
         return String.format("%s,%s,%s,%s", TIME.format(LocalTime.now()), actor, event, detail);
     }
 
-    private Path pathFor(String category, String name, LocalDate day) throws IOException {
+    public Path pathFor(String category, String name, LocalDate day) throws IOException {
         Path dir = (name == null)
                 ? baseDir.resolve(category)
                 : baseDir.resolve(category).resolve(name);
@@ -33,7 +34,7 @@ public class LogFiles {
         return dir.resolve(DAY.format(day) + ".log");
     }
 
-    private void appendLine(Path file, String text) throws IOException {
+    public void appendLine(Path file, String text) throws IOException {
         try (var w = Files.newBufferedWriter(file, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             w.write(text);
@@ -52,7 +53,6 @@ public class LogFiles {
         Files.deleteIfExists(p);
     }
 
-
     /* ---------- 3) Find logs by regex on full path ---------- */
 
     public List<Path> findLogsByRegex(String regex) throws IOException {
@@ -60,7 +60,8 @@ public class LogFiles {
         List<Path> hits = new ArrayList<>();
         try (var walk = Files.walk(baseDir)) {
             walk.filter(Files::isRegularFile).forEach(path -> {
-                if (p.matcher(path.toString()).find()) hits.add(path);
+                if (p.matcher(path.toString()).find())
+                    hits.add(path);
             });
         }
         return hits;
