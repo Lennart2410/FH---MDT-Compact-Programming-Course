@@ -10,8 +10,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class PackingStation extends Station<PackingTask> {
+    Path logsRoot = Paths.get("logs");
+    PackingIo packingIo = new PackingIo(logsRoot);
     @Override
-    public Order process(PackingTask packingTask) {
+    public Order process(PackingTask packingTask)  {
         // Packing items from the order
         // Do something that the Packing-process would usually cover
         // Process should take some seconds to make it realistic
@@ -22,13 +24,19 @@ public class PackingStation extends Station<PackingTask> {
         packingTask.getOrder().setOrderParcels(parcels);
         packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
         logPacking(packingTask, parcels);
-
+        exportPackingLog( packingTask.getOrder().getOrderNumber());
         return packingTask.getOrder();
     }
-
-    private static void logPacking(PackingTask packingTask, List<Parcel> parcels) {
-        Path logsRoot = Paths.get("logs");
-        PackingIo packingIo = new PackingIo(logsRoot);
+private void exportPackingLog(String orderNumber){
+// move label to an “export” folder
+    Path label = Paths.get("logs/packing/labels/"+orderNumber+".txt");
+    try {
+        packingIo.move(label, Paths.get("exports/"+orderNumber+".txt"));
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+    private void logPacking(PackingTask packingTask, List<Parcel> parcels) {
         int count = parcels.size();
         double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
 
