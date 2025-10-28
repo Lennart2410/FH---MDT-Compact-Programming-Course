@@ -24,10 +24,33 @@ public class PackingStation extends Station<PackingTask> {
         packingTask.getOrder().setOrderParcels(parcels);
         packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
         logPacking(packingTask, parcels);
-        exportPackingLog( packingTask.getOrder().getOrderNumber());
+        getLogbyDate(java.time.LocalDate.now().toString());
+        getLogByLabel(packingTask.getOrder().getOrderNumber());
+        exportPackingLog(packingTask.getOrder().getOrderNumber());
         return packingTask.getOrder();
     }
-private void exportPackingLog(String orderNumber){
+
+    private void getLogByLabel(String orderNumber) {
+        List<Path> labels = null;
+        try {
+            labels = packingIo.findByRegex("labels[/\\\\]"+orderNumber+"\\.txt$");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        labels.forEach(System.out::println);
+    }
+
+    private void getLogbyDate(String date) {
+        List<Path> hits = null;
+        try {
+            hits = packingIo.findByRegex(date + "\\.log$"); // match file ending with that date
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        hits.forEach(System.out::println);
+    }
+
+    private void exportPackingLog(String orderNumber){
 // move label to an “export” folder
     Path label = Paths.get("logs/packing/labels/"+orderNumber+".txt");
     try {
