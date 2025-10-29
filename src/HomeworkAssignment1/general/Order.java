@@ -2,6 +2,7 @@ package HomeworkAssignment1.general;
 
 import HomeworkAssignment1.packing.Parcel;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,20 +28,33 @@ public class Order {
         this.totalWeight = 12;
     }
 
-    public String toString() {
-        return "Order [items=" + items + ", orderNumber=" + orderNumber + ", destination=" + destination + "]";
-    }
-    public String getOrderNumber() {
-        return orderNumber;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public List<Parcel> getOrderParcels() {
-        return orderParcels;
+    public String getDestination() {
+        return destination;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
     public OrderStatusEnum getOrderStatusEnum() {
         return orderStatusEnum;
     }
+
+    public void createFile(){
+
+        System.out.println("Order_"+ orderNumber + "_" + LocalDate.now()+".txt");
+    }
+
+
+    public List<Parcel> getOrderParcels() {
+        return orderParcels;
+    }
+
+
     public void setOrderStatusEnum(OrderStatusEnum orderStatusEnum) {
         this.orderStatusEnum = orderStatusEnum;
     }
@@ -51,5 +65,9 @@ public class Order {
 
     public void setTotalWeight(double totalWeight) {
         this.totalWeight = totalWeight;
+    }
+
+    public String toString() {
+        return "Order [items=" + items + ", orderNumber=" + orderNumber + ", destination=" + destination + "]";
     }
 }

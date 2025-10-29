@@ -11,7 +11,8 @@ public class PackingTask extends Task {
     private final LogFiles storage;
     private final Path packBase;
     // Specific content of the PackingTask
-    // Should contain attributes which only accounts to the PackingTask and not the generic Task
+    // Should contain attributes which only accounts to the PackingTask and not the
+    // generic Task
 
     public PackingTask(Order order, BoxingService boxing, LogFiles storage , Path logsRoot) {
         super(order);
