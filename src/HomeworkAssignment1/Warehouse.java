@@ -48,23 +48,6 @@ public class Warehouse {
 
         // Packaging the items inside the order
         order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), storage, logsRoot));
-        List<Path> hits = null;
-        try {
-            hits = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]" + java.time.LocalDate.now() + "\\.log$");
-            hits.forEach(System.out::println);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-// Any label for order A100:
-        List<Path> labels = null;
-        try {
-            labels = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]labels[/\\\\]A100\\.txt$");
-            labels.forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         // Bringing items from the packaging to the loading
         // Note: to access the parcel from packaging station, use order.getOrderParcels()
