@@ -31,7 +31,6 @@ public class PackingStation extends Station<PackingTask> {
         // Do something that the Packing-process would usually cover
         // Process should take some seconds to make it realistic
         // Simulate a tiny bit of work so interrupt is meaningful
-        // Simulate a tiny bit of work so interrupt is meaningful
         try { Thread.sleep(50); }
         catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
