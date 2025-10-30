@@ -12,7 +12,7 @@ public class PickingStationTest {
 
     @Test
     public void testSuccessfulPick() {
-        System.out.println("✅ This test ran successfully");
+        System.out.println(" This test ran successfully");
 
         Order order = new Order("Test Street", List.of(new Item("Book")));
         PickingTask task = new PickingTask(order, "Shelf-A1", "Yasaman", true);
