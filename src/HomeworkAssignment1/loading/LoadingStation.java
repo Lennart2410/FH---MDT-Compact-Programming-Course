@@ -65,7 +65,7 @@ public class LoadingStation extends Station<LoadingTask> {
 
     private void dockVehicleIntoBay(Car car) {
         // Search for free bay and dock car into it
-        if(!(maximumBayCapacity > loadingBayList.size())){
+        if (!(maximumBayCapacity > loadingBayList.size())) {
             // ToDo: Exception einbauen
         }
 
@@ -76,8 +76,12 @@ public class LoadingStation extends Station<LoadingTask> {
         for (LoadingBay loadingBay : loadingBaysWithMatchingDestination) {
             for (Parcel parcel : parcelList) {
                 if (loadingBay.getOccupyingCar().getCurrentCapacity() > parcel.getWeightKg()) {
+                    Employee loadingEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.LOADER)).findFirst().orElseThrow(RuntimeException::new);
+                    // ToDo: Exception einbauen
+                    loadingEmployee.setCurrentlyOccupied(true);
                     loadingBay.getOccupyingCar().addParcel(parcel);
                     addedParcels.add(parcel);
+                    loadingEmployee.setCurrentlyOccupied(false);
                 }
             }
         }
@@ -90,7 +94,11 @@ public class LoadingStation extends Station<LoadingTask> {
     private void startDeliveryById(String id) {
         // ToDo: Exception einbauen
         Car deliveryVehicleToStart = deliveryVehicles.stream().filter(deliveryVehicle -> deliveryVehicle.getId().equals(id)).findFirst().orElseThrow(RuntimeException::new);
+        // ToDo: Exception einbauen
+        Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(RuntimeException::new);
+        deliveryEmployee.setCurrentlyOccupied(true);
         deliveryVehicleToStart.drive();
+        deliveryEmployee.setCurrentlyOccupied(false);
     }
 
 
