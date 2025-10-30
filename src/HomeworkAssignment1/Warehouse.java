@@ -1,5 +1,6 @@
 package HomeworkAssignment1;
 
+
 import HomeworkAssignment1.agv.AGVRunner;
 import HomeworkAssignment1.agv.AgvTask;
 import HomeworkAssignment1.general.Item;
@@ -16,8 +17,8 @@ import HomeworkAssignment1.logging.LogFiles;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
+
 
 public class Warehouse {
     PickingStation pickingStation = new PickingStation();
@@ -36,6 +37,7 @@ public class Warehouse {
         List<Item> itemList = List.of(item1, item2, item3, item4);
 
         processOrder(new Order("Example Street 1", itemList));
+
     }
 
     public void processOrder(Order order) {
@@ -47,24 +49,7 @@ public class Warehouse {
         order = agvRunner.process(toPacking);
 
         // Packaging the items inside the order
-        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), storage, logsRoot));
-        List<Path> hits = null;
-        try {
-            hits = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]" + java.time.LocalDate.now() + "\\.log$");
-            hits.forEach(System.out::println);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Any label for order A100:
-        List<Path> labels = null;
-        try {
-            labels = storage.findLogsByRegex("packing[/\\\\]PACK-1[/\\\\]labels[/\\\\]A100\\.txt$");
-            labels.forEach(System.out::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), logsRoot));
 
         // Bringing items from the packaging to the loading
         AgvTask toLoading = new AgvTask(order, "packing-station", "loading-station", "AGV-01");

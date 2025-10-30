@@ -8,16 +8,14 @@ import java.nio.file.Path;
 
 public class PackingTask extends Task {
     private final BoxingService boxing;
-    private final LogFiles storage;
     private final Path packBase;
     // Specific content of the PackingTask
     // Should contain attributes which only accounts to the PackingTask and not the
     // generic Task
 
-    public PackingTask(Order order, BoxingService boxing, LogFiles storage , Path logsRoot) {
+    public PackingTask(Order order, BoxingService boxing, Path logsRoot) {
         super(order);
         this.boxing = boxing;
-        this.storage = storage;
         this.packBase = logsRoot.resolve("packing");
     }
 
@@ -27,9 +25,6 @@ public class PackingTask extends Task {
 
     public Path getPackBase() {
         return packBase;
-    }
-    public LogFiles getStorage() {
-        return storage;
     }
 
 }
