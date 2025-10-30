@@ -8,7 +8,10 @@ import HomeworkAssignment1.logging.LogFiles;
 import HomeworkAssignment1.packing.Parcel;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,7 @@ public class LoadingStation extends Station<LoadingTask> {
     private List<Car> deliveryVehicles;
     private List<Employee> employeeList;
     private List<LoadingBay> loadingBayList;
-    private final String baseUrl = System.getProperty("user.dir") + "/logs/LoadingStation";
+    private final String baseUrl = "logs";
     private final LogFiles logManager = new LogFiles(Paths.get(baseUrl));
     private final int maximumBayCapacity;
 
@@ -35,38 +38,47 @@ public class LoadingStation extends Station<LoadingTask> {
 
     @Override
     public Order process(LoadingTask loadingTask) {
-        try {
-            writeLogEntry("");
+        //Retrieve Parcels from order
+        Order currentOrder = loadingTask.getOrder();
+        List<Parcel> parcelList = currentOrder.getOrderParcels();
 
-            //Retrieve Parcels from order
-            Order currentOrder = loadingTask.getOrder();
-            List<Parcel> parcelList = currentOrder.getOrderParcels();
+        try {
+            writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " should be processed.", "warehouse");
+
+
             if (parcelList.isEmpty()) {
-                //Exception
+                writeLogEntry("ERROR: Parcellist in order was emtpy.");
+                // ToDo: throw new Exception
             }
 
             List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination("Dortmund");
             if (loadingBaysWithMatchingDestination.isEmpty()) {
-                // Exception
+                writeLogEntry("ERROR: There were no delivery vehicles with a matching destination.");
+                // ToDo: throw new Exception
             }
 
             loadVehicle(loadingBaysWithMatchingDestination, parcelList);
+            currentOrder.setOrderStatusEnum(OrderStatusEnum.LOADED);
 
             startDeliveryById("Car00001");
+            currentOrder.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
+            writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed.", "warehouse");
 
             return loadingTask.getOrder();
         } catch (Exception e) {
-            loadingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
+            currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
         }
-
-        return loadingTask.getOrder();
+        // Returning updated Order with exception state
+        return currentOrder;
     }
 
 
     private void dockVehicleIntoBay(Car car) {
         // Search for free bay and dock car into it
+        writeLogEntry("Trying to dock delivery vehicle: " + car.getId());
         if (!(maximumBayCapacity > loadingBayList.size())) {
-            // ToDo: Exception einbauen
+            writeLogEntry("Docking the delivery vehicle " + car.getId() + " was not possible, because all bays are occupied.");
+            // ToDo: throw new Exception
         }
 
     }
@@ -75,43 +87,60 @@ public class LoadingStation extends Station<LoadingTask> {
         List<Parcel> addedParcels = new ArrayList<>();
         for (LoadingBay loadingBay : loadingBaysWithMatchingDestination) {
             for (Parcel parcel : parcelList) {
+                writeLogEntry("Parcel " + parcel.getId() + " is trying to be loaded.");
                 if (loadingBay.getOccupyingCar().getCurrentCapacity() > parcel.getWeightKg()) {
                     Employee loadingEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.LOADER)).findFirst().orElseThrow(RuntimeException::new);
                     // ToDo: Exception einbauen
                     loadingEmployee.setCurrentlyOccupied(true);
                     loadingBay.getOccupyingCar().addParcel(parcel);
                     addedParcels.add(parcel);
+                    writeLogEntry("Parcel " + parcel.getId() + " was loaded.");
                     loadingEmployee.setCurrentlyOccupied(false);
                 }
+                writeLogEntry("Parcel: " + parcel.getId() + " did not fit into delivery vehicle: " + loadingBay.getOccupyingCar().getId()+ ". Looking for another delivery vehicle.");
             }
         }
 
         if (addedParcels.size() != parcelList.size()) {
             // ToDo: Exception einbauen
+            writeLogEntry("ERROR: Not all parcels fit into delivery vehicle. Order will be split");
         }
     }
 
     private void startDeliveryById(String id) {
+        writeLogEntry("Looking to start delivery with Id: " + id);
         // ToDo: Exception einbauen
         Car deliveryVehicleToStart = deliveryVehicles.stream().filter(deliveryVehicle -> deliveryVehicle.getId().equals(id)).findFirst().orElseThrow(RuntimeException::new);
         // ToDo: Exception einbauen
         Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(RuntimeException::new);
         deliveryEmployee.setCurrentlyOccupied(true);
+        writeLogEntry("Starting delivery with Id " + id+".");
         deliveryVehicleToStart.drive();
+        writeLogEntry("Delivery with Id " + id + " was successful.");
         deliveryEmployee.setCurrentlyOccupied(false);
     }
 
 
     private List<LoadingBay> searchLoadingBayByDestination(String destination) {
-        List<LoadingBay> loadingBayWithCorrectDestinationList = loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getDesination().equals(destination)).toList();
+        writeLogEntry("Searching for a bay with the destination of: " + destination);
         // Search for a loading bay with the right destination
-        return loadingBayWithCorrectDestinationList;
+        return loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getDesination().equals(destination)).toList();
     }
 
 
     private void writeLogEntry(String textToLog) {
         try {
-            logManager.appendLine(Paths.get(baseUrl + "test.txt"), "");
+            Path pathToWrite = logManager.pathFor("loading", "LoadingStation", LocalDate.now());
+            logManager.appendLine(pathToWrite, LocalTime.now() + ": " + textToLog);
+        } catch (IOException e) {
+            // Log not possible
+        }
+    }
+
+    private void writeLogEntry(String textToLog, String destination) {
+        try {
+            Path pathToWrite = logManager.pathFor(destination, null, LocalDate.now());
+            logManager.appendLine(pathToWrite, LocalTime.now() + ": " + textToLog);
         } catch (IOException e) {
             // Log not possible
         }

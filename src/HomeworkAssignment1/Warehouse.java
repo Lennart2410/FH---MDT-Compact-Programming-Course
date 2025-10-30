@@ -17,6 +17,7 @@ import HomeworkAssignment1.logging.LogFiles;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -59,7 +60,7 @@ public class Warehouse {
         loadingStation.process(new LoadingTask(order));
 
         // HA1: Simulate byte stream for AGV task
-        agvRunner.simulateByteStream(toLoading);
+        //agvRunner.simulateByteStream(toLoading);
 
         // HA1: Archive today's AGV log
         try {

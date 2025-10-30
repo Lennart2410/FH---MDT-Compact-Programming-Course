@@ -3,7 +3,6 @@ package HomeworkAssignment1.packing;
 import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
 import HomeworkAssignment1.general.OrderStatusEnum;
-import HomeworkAssignment1.logging.LogFiles;
 import HomeworkAssignment1.packing.exceptions.BoxingFailureException;
 import HomeworkAssignment1.packing.exceptions.PackingIoException;
 import HomeworkAssignment1.packing.exceptions.PackingProcessException;
