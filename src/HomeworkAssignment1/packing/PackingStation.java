@@ -3,73 +3,74 @@ package HomeworkAssignment1.packing;
 import HomeworkAssignment1.general.Order;
 import HomeworkAssignment1.general.OrderStatusEnum;
 import HomeworkAssignment1.general.Station;
+import HomeworkAssignment1.packing.exceptions.BoxingFailureException;
+import HomeworkAssignment1.packing.exceptions.PackingIoException;
+import HomeworkAssignment1.packing.exceptions.PackingProcessException;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class PackingStation extends Station<PackingTask> {
-    Path logsRoot = Paths.get("logs");
-    PackingIo packingIo = new PackingIo(logsRoot);
+   private Path logsRoot ;
+   private PackingIO packingIo;
+
+    public PackingStation() {
+        logsRoot = Paths.get("logs");
+        packingIo = new PackingIO(logsRoot);
+    }
+
+    /** Extra constructor for tests (inject temp logs and/or custom IO). */
+    public PackingStation(Path logsRoot, PackingIO packingIo) {
+        this.logsRoot = logsRoot;
+        this.packingIo = packingIo;
+    }
     @Override
     public Order process(PackingTask packingTask)  {
         // Packing items from the order
         // Do something that the Packing-process would usually cover
         // Process should take some seconds to make it realistic
+        // Simulate a tiny bit of work so interrupt is meaningful
+        // Simulate a tiny bit of work so interrupt is meaningful
+        try { Thread.sleep(50); }
+        catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new PackingProcessException("Packing interrupted for " +
+                    packingTask.getOrder().getOrderNumber(), ie);   // re-throw + chaining
+        }
 
-        System.out.println("Im im packing!");
-        var parcels = packingTask.getBoxing().cartonize();
-        System.out.println(parcels.getFirst().getId());
+        // Boxing: if service fails, rethrow with context
+        final List<Parcel> parcels;
+        try {
+            System.out.println("Im im packing!");
+            parcels = packingTask.getBoxing().cartonize();
+            System.out.println(parcels.getFirst().getId());
+        } catch (RuntimeException ex) {
+            throw new BoxingFailureException("Cartonization failed for " +
+                    packingTask.getOrder().getOrderNumber(), ex);
+        }
+
+        // Update order state
         packingTask.getOrder().setOrderParcels(parcels);
         packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
-        logPacking(packingTask, parcels);
-        getLogbyDate(java.time.LocalDate.now().toString());
-        getLogByLabel(packingTask.getOrder().getOrderNumber());
-        exportPackingLog(packingTask.getOrder().getOrderNumber());
+
+        // I/O sequence: multi-catch and rethrow as processing error
+        try {
+            LogPackingTask(packingTask, parcels);
+        } catch (PackingIoException | IllegalStateException e) { // multiple exceptions
+            throw new PackingProcessException(
+                    "I/O sequence failed at packing stage for " +
+                            packingTask.getOrder().getOrderNumber(), e);
+        }
+
         return packingTask.getOrder();
     }
 
-    private void getLogByLabel(String orderNumber) {
-        List<Path> labels = null;
-        try {
-            labels = packingIo.findByRegex("labels[/\\\\]"+orderNumber+"\\.txt$");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        labels.forEach(System.out::println);
-    }
-
-    private void getLogbyDate(String date) {
-        List<Path> hits = null;
-        try {
-            hits = packingIo.findByRegex(date + "\\.log$"); // match file ending with that date
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        hits.forEach(System.out::println);
-    }
-
-    private void exportPackingLog(String orderNumber){
-// move label to an “export” folder
-    Path label = Paths.get("logs/packing/labels/"+orderNumber+".txt");
-    try {
-        packingIo.move(label, Paths.get("exports/"+orderNumber+".txt"));
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    }
-}
-    private void logPacking(PackingTask packingTask, List<Parcel> parcels) {
-        int count = parcels.size();
-        double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
-
-        try {
-            packingIo.logEvent("Cartonized " + packingTask.getOrder().getOrderNumber() + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
-            packingIo.writeLabel(packingTask.getOrder().getOrderNumber(), count, total);
-            packingIo.writeManifest(packingTask.getOrder().getOrderNumber(), count, total);
-        } catch (IOException e) {
-            System.err.println("PACK I/O failed: " + e.getMessage());
-        }
+    private void LogPackingTask(PackingTask packingTask, List<Parcel> parcels) {
+        packingIo.logPacking(packingTask.getOrder().getOrderNumber(), parcels);
+        packingIo.searchLogsByDate(java.time.LocalDate.now().toString());
+        packingIo.searchLogsByLabel(packingTask.getOrder().getOrderNumber());
+        packingIo.exportPackingLog(packingTask.getOrder().getOrderNumber());
     }
 
 }
