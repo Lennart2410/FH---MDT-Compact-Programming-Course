@@ -26,7 +26,6 @@ public class Warehouse {
     AGVRunner agvRunner = new AGVRunner();
     LoadingStation loadingStation  = new LoadingStation();
     Path logsRoot = Paths.get("logs");
-    LogFiles storage = new LogFiles(logsRoot);
     public Warehouse() {
         Item item1 = new Item("Phone");
         Item item2 = new Item("Book");
@@ -47,7 +46,7 @@ public class Warehouse {
         order = agvRunner.process(new AgvTask(order,"shelves","packing-station"));
 
         // Packaging the items inside the order
-        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), storage, logsRoot));
+        order = packingStation.process(new PackingTask(order, new OrderBoxingService(order), logsRoot));
 
         // Bringing items from the packaging to the loading
         // Note: to access the parcel from packaging station, use order.getOrderParcels()

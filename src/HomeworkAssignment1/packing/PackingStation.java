@@ -29,14 +29,6 @@ public class PackingStation extends Station<PackingTask> {
     public Order process(PackingTask packingTask)  {
         // Packing items from the order
         // Do something that the Packing-process would usually cover
-        // Process should take some seconds to make it realistic
-        // Simulate a tiny bit of work so interrupt is meaningful
-        try { Thread.sleep(50); }
-        catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            throw new PackingProcessException("Packing interrupted for " +
-                    packingTask.getOrder().getOrderNumber(), ie);   // re-throw + chaining
-        }
 
         // Boxing: if service fails, rethrow with context
         final List<Parcel> parcels;

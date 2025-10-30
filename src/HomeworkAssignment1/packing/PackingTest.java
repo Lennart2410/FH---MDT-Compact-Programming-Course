@@ -45,7 +45,7 @@ public class PackingTest {
     void process_success_createsPackingLogsAndSetsStatus() {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-"+order.getOrderNumber(), "S", 1.2));
-        PackingTask task = new PackingTask(order, ok, null, temp);
+        PackingTask task = new PackingTask(order, ok, temp);
 
         PackingStation station = new PackingStation(temp, io);
         Order out = station.process(task);
@@ -67,7 +67,7 @@ public class PackingTest {
     void process_boxingThrows_wrapsAsBoxingFailureException() {
         Order order = newOrder();
         BoxingService failing = () -> { throw new IllegalStateException("scale offline"); };
-        PackingTask task = new PackingTask(order, failing, null, temp);
+        PackingTask task = new PackingTask(order, failing, temp);
 
         PackingStation station = new PackingStation(temp, io);
         BoxingFailureException ex = assertThrows(BoxingFailureException.class, () -> station.process(task));
@@ -80,7 +80,7 @@ public class PackingTest {
     void process_exportFails_rethrowsAsPackingProcessException() {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-"+order.getOrderNumber(),"S",1.0));
-        PackingTask task = new PackingTask(order, ok, null, temp);
+        PackingTask task = new PackingTask(order, ok, temp);
 
         // IO test double: make only export fail
         PackingIO ioFailingExport = new PackingIO(temp) {
@@ -100,7 +100,7 @@ public class PackingTest {
     void process_labelReadableAfterWrite() throws Exception {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-"+order.getOrderNumber(),"S",1.0));
-        PackingTask task = new PackingTask(order, ok, null, temp);
+        PackingTask task = new PackingTask(order, ok, temp);
 
         PackingStation station = new PackingStation(temp, io);
         station.process(task);
@@ -110,23 +110,6 @@ public class PackingTest {
                 .resolve(order.getOrderNumber() + ".txt");
         List<String> lines = Files.readAllLines(label);
         assertEquals("=== PACKING LABEL ===", lines.get(0));
-    }
-
-    /** 5) Interrupted thread is rethrown as PackingProcessException (rethrow + chaining). */
-    @Test
-    void process_interruptedThread_rethrowsAsPackingProcessException() {
-        Order order = newOrder();
-        BoxingService ok = () -> List.of(new Parcel("P-"+order.getOrderNumber(),"S",1.0));
-        PackingTask task = new PackingTask(order, ok, null, temp);
-
-        PackingStation station = new PackingStation(temp, io);
-
-        Thread.currentThread().interrupt(); // cause next sleep to throw immediately
-        try {
-            assertThrows(PackingProcessException.class, () -> station.process(task));
-        } finally {
-            Thread.interrupted(); // clear flag
-        }
     }
 
 }
