@@ -1,6 +1,5 @@
 package HomeworkAssignment1.logging;
 
-import HomeworkAssignment1.logging.LogFiles;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;

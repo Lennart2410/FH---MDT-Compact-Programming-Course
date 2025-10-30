@@ -23,7 +23,7 @@ public class Warehouse {
     PickingStation pickingStation = new PickingStation();
     PackingStation packingStation = new PackingStation();
     AGVRunner agvRunner = new AGVRunner(Path.of("logs"));
-    LoadingStation loadingStation = new LoadingStation();
+    LoadingStation loadingStation = new LoadingStation(2);
     Path logsRoot = Paths.get("logs");
     LogFiles storage = new LogFiles(logsRoot);
 

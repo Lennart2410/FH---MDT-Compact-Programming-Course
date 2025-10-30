@@ -1,9 +1,7 @@
 package HomeworkAssignment1.agv;
 
-import HomeworkAssignment1.agv.AGVRunner;
-import HomeworkAssignment1.agv.AgvTask;
-import HomeworkAssignment1.general.Order;
 import HomeworkAssignment1.general.Item;
+import HomeworkAssignment1.general.Order;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;

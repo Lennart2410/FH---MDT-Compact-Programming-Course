@@ -1,12 +1,12 @@
 package HomeworkAssignment1.picking;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
 import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.picking.PickingTask;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PickingStationTest {
 

@@ -1,86 +1,111 @@
 package HomeworkAssignment1.loading;
 
-import HomeworkAssignment1.general.Employee;
-import HomeworkAssignment1.general.JobType;
-import HomeworkAssignment1.general.Order;
-import HomeworkAssignment1.general.Station;
+import HomeworkAssignment1.general.*;
 import HomeworkAssignment1.loading.vehicles.Car;
 import HomeworkAssignment1.loading.vehicles.Truck;
 import HomeworkAssignment1.loading.vehicles.Van;
+import HomeworkAssignment1.logging.LogFiles;
+import HomeworkAssignment1.packing.Parcel;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoadingStation extends Station<LoadingTask> {
 
-    List<Car> deliveryVehicles;
-    List<Employee> employeeList;
-    List<LoadingBay> loadingBayList;
+    private List<Car> deliveryVehicles;
+    private List<Employee> employeeList;
+    private List<LoadingBay> loadingBayList;
+    private final String baseUrl = System.getProperty("user.dir") + "/logs/LoadingStation";
+    private final LogFiles logManager = new LogFiles(Paths.get(baseUrl));
+    private final int maximumBayCapacity;
 
-    public LoadingStation(){
-        deliveryVehicles = List.of(new Van(), new Truck());
-        employeeList = List.of(new Employee("Lennart Ziehm",27, JobType.LOADER),new Employee("Max Mustermann",44, JobType.DELIVERY) );
+
+    public LoadingStation(int maximumBayCapacity) {
+        deliveryVehicles = new ArrayList<>();
+        employeeList = List.of(new Employee("Lennart Ziehm", 27, JobType.LOADER), new Employee("Max Mustermann", 44, JobType.DELIVERY));
         loadingBayList = List.of(new LoadingBay(), new LoadingBay());
+        this.maximumBayCapacity = maximumBayCapacity;
+
+        // Dock a vehicle into the docking-bay
+        dockVehicleIntoBay(new Van(30.0, "Dortmund"));
+        dockVehicleIntoBay(new Truck(95.0, "Dortmund"));
     }
 
     @Override
     public Order process(LoadingTask loadingTask) {
-        //6. Access Order.txt and update things like OrderStatus -> LOADED / LOADING
+        try {
+            writeLogEntry("");
 
-        // Loading items from the order
-        // Do something that the Loading-process would usually cover
-        // Process should take some seconds to make it realistic
+            //Retrieve Parcels from order
+            Order currentOrder = loadingTask.getOrder();
+            List<Parcel> parcelList = currentOrder.getOrderParcels();
+            if (parcelList.isEmpty()) {
+                //Exception
+            }
 
+            List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination("Dortmund");
+            if (loadingBaysWithMatchingDestination.isEmpty()) {
+                // Exception
+            }
 
-        Order order = loadingTask.getOrder();
-        System.out.println("Processing Order with order number " + order.getOrderNumber());
+            loadVehicle(loadingBaysWithMatchingDestination, parcelList);
 
-        Truck truck = new Truck();
+            startDeliveryById("Car00001");
 
-        dockVehicleIntoBay(truck);
-
-        List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination("Dortmund");
-
-        loadVehicle(loadingBaysWithMatchingDestination.get(0),loadingTask.getOrder());
-        // load vehicles of this class with order
-
-
-        startDeliveryById("123456");
-
-        System.out.println(order.getOrderNumber() + " is being processed at the loading station."); // -> Write to LoadingStation.txt
-
-        System.out.println("Im im loading!");
+            return loadingTask.getOrder();
+        } catch (Exception e) {
+            loadingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
+        }
 
         return loadingTask.getOrder();
     }
 
 
-    private void dockVehicleIntoBay(Car car){
+    private void dockVehicleIntoBay(Car car) {
         // Search for free bay and dock car into it
+        if(!(maximumBayCapacity > loadingBayList.size())){
+            // ToDo: Exception einbauen
+        }
+
     }
 
-    private void loadVehicle(LoadingBay loadingBay, Order order){
-        // Check
+    private void loadVehicle(List<LoadingBay> loadingBaysWithMatchingDestination, List<Parcel> parcelList) {
+        List<Parcel> addedParcels = new ArrayList<>();
+        for (LoadingBay loadingBay : loadingBaysWithMatchingDestination) {
+            for (Parcel parcel : parcelList) {
+                if (loadingBay.getOccupyingCar().getCurrentCapacity() > parcel.getWeightKg()) {
+                    loadingBay.getOccupyingCar().addParcel(parcel);
+                    addedParcels.add(parcel);
+                }
+            }
+        }
 
-        // access classes vehicle list
-        // access classes employee list
-
-        // check if parcel fits into vehicle
-        // check if parcel is too heavy for the vehicle
-        // check if enough employees are present for loading -> at threshold 2 employees are needed
+        if (addedParcels.size() != parcelList.size()) {
+            // ToDo: Exception einbauen
+        }
     }
 
-    private void startDeliveryById(String id){
-        // check if enough employees are present to drive -> needs to have right role
-        //search for vehicle by id
-        Truck deliveryVehicle = new Truck();
-        deliveryVehicle.drive();
+    private void startDeliveryById(String id) {
+        // ToDo: Exception einbauen
+        Car deliveryVehicleToStart = deliveryVehicles.stream().filter(deliveryVehicle -> deliveryVehicle.getId().equals(id)).findFirst().orElseThrow(RuntimeException::new);
+        deliveryVehicleToStart.drive();
     }
 
 
-    private List<LoadingBay> searchLoadingBayByDestination(String destination){
-        List<LoadingBay> loadingBayWithCorrectDestinationList = new ArrayList<>();
+    private List<LoadingBay> searchLoadingBayByDestination(String destination) {
+        List<LoadingBay> loadingBayWithCorrectDestinationList = loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getDesination().equals(destination)).toList();
         // Search for a loading bay with the right destination
         return loadingBayWithCorrectDestinationList;
+    }
+
+
+    private void writeLogEntry(String textToLog) {
+        try {
+            logManager.appendLine(Paths.get(baseUrl + "test.txt"), "");
+        } catch (IOException e) {
+            // Log not possible
+        }
     }
 }
