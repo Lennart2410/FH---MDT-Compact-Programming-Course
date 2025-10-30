@@ -48,13 +48,13 @@ public class LoadingStation extends Station<LoadingTask> {
 
             if (parcelList.isEmpty()) {
                 writeLogEntry("ERROR: Parcellist in order was emtpy.");
-                // ToDo: throw new Exception
+                // ToDo: throw new Exception -> new NoParcelException();
             }
 
             List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination("Dortmund");
             if (loadingBaysWithMatchingDestination.isEmpty()) {
                 writeLogEntry("ERROR: There were no delivery vehicles with a matching destination.");
-                // ToDo: throw new Exception
+                // ToDo: throw new Exception -> new NoDestinationExeption();
             }
 
             loadVehicle(loadingBaysWithMatchingDestination, parcelList);
@@ -78,7 +78,7 @@ public class LoadingStation extends Station<LoadingTask> {
         writeLogEntry("Trying to dock delivery vehicle: " + car.getId());
         if (!(maximumBayCapacity > loadingBayList.size())) {
             writeLogEntry("Docking the delivery vehicle " + car.getId() + " was not possible, because all bays are occupied.");
-            // ToDo: throw new Exception
+            // ToDo: throw new Exception -> new NoMoreBayException();
         }
 
     }
@@ -90,7 +90,7 @@ public class LoadingStation extends Station<LoadingTask> {
                 writeLogEntry("Parcel " + parcel.getId() + " is trying to be loaded.");
                 if (loadingBay.getOccupyingCar().getCurrentCapacity() > parcel.getWeightKg()) {
                     Employee loadingEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.LOADER)).findFirst().orElseThrow(RuntimeException::new);
-                    // ToDo: Exception einbauen
+                    // ToDo: Exception einbauen -> new NoEmployeeException();
                     loadingEmployee.setCurrentlyOccupied(true);
                     loadingBay.getOccupyingCar().addParcel(parcel);
                     addedParcels.add(parcel);
@@ -102,16 +102,16 @@ public class LoadingStation extends Station<LoadingTask> {
         }
 
         if (addedParcels.size() != parcelList.size()) {
-            // ToDo: Exception einbauen
+            // ToDo: Exception einbauen -> new NoMoreSpaceException();
             writeLogEntry("ERROR: Not all parcels fit into delivery vehicle. Order will be split");
         }
     }
 
     private void startDeliveryById(String id) {
         writeLogEntry("Looking to start delivery with Id: " + id);
-        // ToDo: Exception einbauen
+        // ToDo: Exception einbauen -> new DeliveryNotFoundException();
         Car deliveryVehicleToStart = deliveryVehicles.stream().filter(deliveryVehicle -> deliveryVehicle.getId().equals(id)).findFirst().orElseThrow(RuntimeException::new);
-        // ToDo: Exception einbauen
+        // ToDo: Exception einbauen -> new NoEmployeeException();
         Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(RuntimeException::new);
         deliveryEmployee.setCurrentlyOccupied(true);
         writeLogEntry("Starting delivery with Id " + id+".");
