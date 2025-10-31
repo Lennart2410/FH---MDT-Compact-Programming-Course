@@ -1,14 +1,25 @@
 # FH---MDT-Compact-Programming-Course
+
 Group work assignments for the mandatory Compact Programming Course
 
 ## Overview of work assignment
 
+- [Self assignment 1](#SA1)
+- [Self assignment 2](#SA1)
+- [Self assignment 3](#SA1)
+- [Homework assignment 1](#HA1)
+- [Homework assignment 2](#HA2)
+- [Homework assignment 3](#Homework assignment 3)
+
 ### Self assignment 1
+
     - Problem 1: Yasaman OladzadAbasabadi 7223229
     - Problem 2: Lennart Ziehm 7201519
     - Problem 3: Niloufar OladzadAbasabadi 7223228
     - Problem 4: Lennart Ziehm 7201519
+
 ### Self assignment 2
+
     - Class implementation part 1: Marianne Nosseir 7224660
         - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
     - Class implementation part 2: Lennart Ziehm 7201519
@@ -23,108 +34,82 @@ Group work assignments for the mandatory Compact Programming Course
             - if any AGV has less than 20 percent of battery left
             - if any AGV is used multiple time for different operations
             - which AGV is the fastest overall
+
 ### Self assignment 3
+
     - Lennart Ziehm 7201519: Implementation of HardwareResources, NonHumanResources, Resource + UML-Diagram
     - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
     - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
     - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
+
 #### UML-Diagram of Self Assignment 3
+
 ![UML-Diagram of Self Assignment 3](./src/SelfAssignment3/UML-SA.drawio.png)
 
- *All Getter and Setter are represented by <<get>> or <<set>> in order to keep the UML-Diagram structured.
+*All Getter and Setter are represented by <<get>> or <<set>> in order to keep the UML-Diagram structured.
 
- ** Abstract classes and methods are represented by {abstract} instead of just being italic for visibility purpose.
-### Homwork assignment 1
+** Abstract classes and methods are represented by {abstract} instead of just being italic for visibility purpose.
+
+### Project Requirements
+
+The Homework Assignments and Capstone Project have a shared project idea. The project is the Amazon Fulfillment center,
+which is a real life adaption of the warehouse systems from the Self assignments. The warehouse processes cover the
+general processes which an order goes through before it is delivered to a customer. The warehouse itself is divided into
+four different stations, which cover the core functionality in the process of ordering products.
+After the placement of the order, each order goes through every station one after another.
+
+#### Picking station
+
+The picking station is the first station at which the order is being handled. There, the different items are being
+picked from inventory shelves so that the items can be transported to the next station.
+
+#### AGV runner
+
+The AGV runner itself is not a real station, but shares key points with the other stations. The AGV runner is a
+self-driving robot which can carry a load of different items. The main goal is to transport the items of an order to the
+next station. Precisely, it transports items from the Picking station to the Packing station or from the Packing station
+to the Loading station.
+
+#### Packing station
+
+The Packing station receives the items from the AGV runner, which have to be wrapped up into a box. The box size is
+automatically calculated based on the weight of the items. The wrapped up items are afterward handed over to the AGV
+runner that will transport the parcels to the Loading station.
+
+#### Loading station
+
+The Loading station is the final part inside the warehouse system. 
+
+### Project diagrams
+
+![UML class diagram Capstone](./src/CapstoneProject/diagrams/classdiagramv2.png)
+![UML sequence diagram Capstone](./src/CapstoneProject/diagrams/sequence-diagramv2.png)
+
+### Homework assignment 1
+
     - Lennart Ziehm 7201519: LoadingStation and related classes
     - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
-### Homwork assignment 2
+
+### Homework assignment 2
+
     - Lennart Ziehm 7201519: LoadingStation and related classes
     - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
-### Homwork assignment 3
 
-### Homwork assignment 4
+### Homework assignment 3
 
-### Capstone project
-
-## Project installation
-The following steps descibe the usage of possible IDEs for running this project
-
-### Checkout the project
-- Choose a folder to clone the project, preferably one that can contain many projects (i.e. "/projects/*")
-- (optional) Clone the repository with "git clone https://github.com/Lennart2410/FH---MDT-Compact-Programming-Course.git" via cmd (command prompt)
-
-### Installation in IDEs
-
-#### Eclipse
-- Install Eclipse
-- Open Eclipse and create a workspace
-- Select "Create a Java Project"
-- Uncheck "Use default location" and select the path of the cloned project
-- Choose another name since "-" are not allowed in the project names
-- Unselect "Create module-info.java file"
-- Press "Finish"
-
-#### Visual Studi Code
-- Install Visual Studio Code
-- Install Plugin "Extension Pack for Java" by Microsoft
-- Setup JDK on operating system -> VS Code should be able find the installed JDK Version of the OS
-
-If configured correctly, hit the "Start-Button" in the top right corner when the classfile which should be run is open. Otherwise just hit the "run"-Button which is ontop of the main-method in the respective classfile. 
-
-#### IntelliJ
-- Install IntelliJ
-- Import project with "Open..." (or "Clone repository..." if the project was not previously downloaded)
-
-## Overview of work assignment
-
-### Self assignment 1
-    - Problem 1:
-    - Problem 2: Lennart Ziehm 7201519
-    - Problem 3:
-    - Problem 4:
-### Self assignment 2
-
-### Self assignment 3
-
-### Homwork assignment 1
-
-### Homwork assignment 2
-
-### Homwork assignment 3
-
-### Homwork assignment 4
+    - Lennart Ziehm 7201519: LoadingStation and related classes
+    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
+    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
+    - Marianne Nosseir 7224660: PackingStation and related classes
 
 ### Capstone project
 
-## Project installation
-The following steps descibe the usage of possible IDEs for running this project
+    - Lennart Ziehm 7201519: LoadingStation and related classes
+    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
+    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
+    - Marianne Nosseir 7224660: PackingStation and related classes
 
-### Checkout the project
-- Choose a folder to clone the project, preferably one that can contain many projects (i.e. "/projects/*")
-- (optional) Clone the repository with "git clone https://github.com/Lennart2410/FH---MDT-Compact-Programming-Course.git" via cmd (command prompt)
-
-### Installation in IDEs
-
-#### Eclipse
-- Install Eclipse
-- Open Eclipse and create a workspace
-- Select "Create a Java Project"
-- Uncheck "Use default location" and select the path of the cloned project
-- Choose another name since "-" are not allowed in the project names
-- Unselect "Create module-info.java file"
-- Press "Finish"
-
-#### Visual Studi Code
-- Install Visual Studio Code
-- Install Plugin "Extension Pack for Java" by Microsoft
-- Setup JDK on operating system -> VS Code should be able find the installed JDK Version of the OS
-
-If configured correctly, hit the "Start-Button" in the top right corner when the classfile which should be run is open. Otherwise just hit the "run"-Button which is ontop of the main-method in the respective classfile. 
-
-#### IntelliJ
-- Install IntelliJ
-- Import project with "Open..." (or "Clone repository..." if the project was not previously downloaded)
