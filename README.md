@@ -35,9 +35,15 @@ Group work assignments for the mandatory Compact Programming Course
 
  ** Abstract classes and methods are represented by {abstract} instead of just being italic for visibility purpose.
 ### Homwork assignment 1
-
+    - Lennart Ziehm 7201519: LoadingStation and related classes
+    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
+    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
+    - Marianne Nosseir 7224660: PackingStation and related classes
 ### Homwork assignment 2
-
+    - Lennart Ziehm 7201519: LoadingStation and related classes
+    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
+    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
+    - Marianne Nosseir 7224660: PackingStation and related classes
 ### Homwork assignment 3
 
 ### Homwork assignment 4
