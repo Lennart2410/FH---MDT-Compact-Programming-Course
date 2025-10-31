@@ -9,6 +9,7 @@ import HomeworkAssignment1.loading.vehicles.Truck;
 import HomeworkAssignment1.loading.vehicles.Van;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class LoadingStationTest {
@@ -19,8 +20,8 @@ public class LoadingStationTest {
     static Employee employee01;
     static Employee employee02;
 
-    @BeforeAll
-    static void setUp(){
+    @BeforeEach
+    void setUp(){
         truck01 = new Truck(95.0,"Dortmund");
         van01 = new Van(33.0,"Berlin");
         employee01 = new Employee("Lennart Ziehm", 27, JobType.DELIVERY);
