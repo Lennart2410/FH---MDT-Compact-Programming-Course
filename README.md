@@ -50,7 +50,7 @@ Group work assignments for the mandatory Compact Programming Course
 
 ** Abstract classes and methods are represented by {abstract} instead of just being italic for visibility purpose.
 
-### Project Requirements
+### Project Requirements - Amazon Fulfillment Center
 
 The Homework Assignments and Capstone Project have a shared project idea. The project is the Amazon Fulfillment center,
 which is a real life adaption of the warehouse systems from the Self assignments. The warehouse processes cover the
@@ -78,7 +78,10 @@ runner that will transport the parcels to the Loading station.
 
 #### Loading station
 
-The Loading station is the final part inside the warehouse system. 
+The Loading station is the final part inside the warehouse system. It takes the parcels and puts them into delivery
+vehicles based up on weight of the parcels and their destination. Two kind of employees work at the Loading station.
+Loader employees fill up the delivery vehicles with parcels and make them ready to be delivered. Driver employees take
+care of delivering the loaded parcels to the customer.
 
 ### Project diagrams
 
