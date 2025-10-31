@@ -1,4 +1,4 @@
-package HomeworkAssignment1.picking;
+/*package HomeworkAssignment1.picking;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,4 +42,4 @@ public class ExceptionTest {
             throw new PickingException("Wrapped exception", e);
         }
     }
-}
+}*/

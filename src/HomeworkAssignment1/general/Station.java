@@ -1,6 +1,8 @@
 package HomeworkAssignment1.general;
 
 
+import HomeworkAssignment1.general.exceptions.WarehouseException;
+
 import java.util.UUID;
 
 /**
@@ -15,5 +17,5 @@ public abstract class Station<T extends Task> implements IStation {
         this.id = UUID.randomUUID().toString();
     }
 
-    protected abstract Order process(T task);
+    protected abstract Order process(T task) throws WarehouseException;
 }

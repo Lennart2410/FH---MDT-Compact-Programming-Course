@@ -1,4 +1,10 @@
 package HomeworkAssignment1.loading.exceptions;
 
-public class LoadingException {
+import HomeworkAssignment1.general.exceptions.WarehouseException;
+
+public class LoadingException extends WarehouseException {
+
+    public LoadingException(String message) {
+        super(message);
+    }
 }

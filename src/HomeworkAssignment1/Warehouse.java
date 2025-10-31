@@ -5,6 +5,7 @@ import HomeworkAssignment1.agv.AGVRunner;
 import HomeworkAssignment1.agv.AgvTask;
 import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
+import HomeworkAssignment1.general.exceptions.WarehouseException;
 import HomeworkAssignment1.loading.LoadingStation;
 import HomeworkAssignment1.loading.LoadingTask;
 import HomeworkAssignment1.packing.OrderBoxingService;
@@ -29,7 +30,7 @@ public class Warehouse {
     Path logsRoot = Paths.get("logs");
     LogFiles storage = new LogFiles(logsRoot);
 
-    public Warehouse() {
+    public Warehouse() throws WarehouseException {
         Item item1 = new Item("Phone");
         Item item2 = new Item("Book");
         Item item3 = new Item("Another Book");
@@ -41,7 +42,7 @@ public class Warehouse {
 
     }
 
-    public void processOrder(Order order) {
+    public void processOrder(Order order) throws WarehouseException {
         // Picking process from shelves
         order = pickingStation.process(new PickingTask(order, "Shelf-A3", "Yasaman", true));
 

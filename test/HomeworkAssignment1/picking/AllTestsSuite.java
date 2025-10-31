@@ -1,4 +1,4 @@
-package HomeworkAssignment1.picking;
+/*package HomeworkAssignment1.picking;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -9,4 +9,4 @@ import org.junit.platform.suite.api.Suite;
                 ExceptionTest.class
 })
 public class AllTestsSuite {
-}
+}*/

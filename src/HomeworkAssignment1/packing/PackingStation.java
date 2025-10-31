@@ -35,7 +35,7 @@ public class PackingStation extends Station<PackingTask> {
         try {
             System.out.println("Im im packing!");
             parcels = packingTask.getBoxing().cartonize();
-            System.out.println(parcels.getFirst().getId());
+            //System.out.println(parcels.getFirst().getId());
         } catch (RuntimeException ex) {
             throw new BoxingFailureException("Cartonization failed for " +
                     packingTask.getOrder().getOrderNumber(), ex);

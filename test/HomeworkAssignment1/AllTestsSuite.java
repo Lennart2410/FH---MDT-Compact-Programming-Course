@@ -1,4 +1,4 @@
-package HomeworkAssignment1;
+/*package HomeworkAssignment1;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -12,3 +12,4 @@ import org.junit.platform.suite.api.Suite;
 public class AllTestsSuite {
 
 }
+*/

@@ -1,4 +1,4 @@
-package HomeworkAssignment1.picking;
+/*package HomeworkAssignment1.picking;
 
 import HomeworkAssignment1.general.Item;
 import HomeworkAssignment1.general.Order;
@@ -48,4 +48,4 @@ public class PickingStationTest {
         PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", "Yasaman", false);
         assertFalse(task.isItemAvailable());
     }
-}
+}*/

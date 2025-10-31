@@ -10,6 +10,7 @@ public class LoadingBay {
 
     public LoadingBay(){
         this.bayNumber = "BAY-" + globalBayNumber++;
+        this.occupyingCar = null;
     }
 
     public String getBayNumber() {
@@ -20,5 +21,7 @@ public class LoadingBay {
         return occupyingCar;
     }
 
-
+    public void setOccupyingCar(Car occupyingCar) {
+        this.occupyingCar = occupyingCar;
+    }
 }
