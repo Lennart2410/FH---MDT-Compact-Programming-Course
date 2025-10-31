@@ -2,15 +2,6 @@
 
 Group work assignments for the mandatory Compact Programming Course
 
-## Overview of work assignment
-
-- [Self assignment 1](#SA1)
-- [Self assignment 2](#SA1)
-- [Self assignment 3](#SA1)
-- [Homework assignment 1](#HA1)
-- [Homework assignment 2](#HA2)
-- [Homework assignment 3](#Homework assignment 3)
-
 ### Self assignment 1
 
     - Problem 1: Yasaman OladzadAbasabadi 7223229
