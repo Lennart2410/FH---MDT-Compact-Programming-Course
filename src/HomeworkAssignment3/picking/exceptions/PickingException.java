@@ -1,11 +1,13 @@
-package HomeworkAssignment3.picking;
+package HomeworkAssignment3.picking.exceptions;
+
+import HomeworkAssignment3.general.exceptions.WarehouseException;
 
 /**
- * Runtime exception thrown during picking operations.
+ * WarehouseException thrown during picking operations.
  * Used to signal unexpected failures such as unavailable items or system
  * errors.
  */
-public class PickingException extends RuntimeException {
+public class PickingException extends WarehouseException {
 
     /**
      * Constructs a new PickingException with a detail message.

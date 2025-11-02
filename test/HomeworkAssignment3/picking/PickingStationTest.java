@@ -3,31 +3,48 @@ package HomeworkAssignment3.picking;
 
 import HomeworkAssignment3.general.Item;
 import HomeworkAssignment3.general.Order;
+import HomeworkAssignment3.general.OrderStatusEnum;
+import HomeworkAssignment3.general.Task;
+import HomeworkAssignment3.general.exceptions.WarehouseException;
+import HomeworkAssignment3.picking.exceptions.PickingException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PickingStationTest {
 
+    PickingStation station;
+
+    @BeforeEach
+    public void setUp() {
+        BlockingQueue<Task> ingoingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Task> outgoingQueue =  new ArrayBlockingQueue<>(1);
+        station = new PickingStation(ingoingQueue,outgoingQueue);
+    }
+
     @Test
-    public void testSuccessfulPick() {
+    public void testSuccessfulPick() throws WarehouseException {
         System.out.println(" This test ran successfully");
 
         Order order = new Order("Test Street", List.of(new Item("Book")));
         PickingTask task = new PickingTask(order, "Shelf-A1", "Yasaman", true);
-        PickingStation station = new PickingStation();
 
-        Order result = station.process(task);
-        assertEquals(order.toString(), result.toString());
+
+        assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.ORDERED);
+        station.process(task);
+        assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.PICKED);
     }
 
     @Test
     public void testItemUnavailableThrowsException() {
         Order order = new Order("Test Street", List.of(new Item("Book")));
         PickingTask task = new PickingTask(order, "Shelf-A1", "Yasaman", false);
-        PickingStation station = new PickingStation();
+
 
         assertThrows(PickingException.class, () -> station.process(task));
     }

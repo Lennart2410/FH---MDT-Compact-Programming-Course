@@ -1,10 +1,10 @@
-package HomeworkAssignment3.picking;
+package HomeworkAssignment3.picking.exceptions;
 
 /**
  * Exception thrown when a requested item is not found during picking.
  * Used to signal missing inventory or shelf errors.
  */
-public class ItemNotFoundException extends Exception {
+public class ItemNotFoundException extends PickingException {
 
     /**
      * Constructs a new ItemNotFoundException with a detail message.

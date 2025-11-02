@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class LoadingStation extends Station<LoadingTask> {
 
@@ -28,7 +29,8 @@ public class LoadingStation extends Station<LoadingTask> {
     private final int maximumBayCapacity;
 
 
-    public LoadingStation(int maximumBayCapacity) {
+    public LoadingStation(int maximumBayCapacity, BlockingQueue<Task> in, BlockingQueue<Task> out) {
+        super(in, out);
         deliveryVehicles = new ArrayList<>();
         employeeList = new ArrayList<>();
         loadingBayList = new ArrayList<>();
@@ -40,7 +42,7 @@ public class LoadingStation extends Station<LoadingTask> {
     }
 
     @Override
-    public Order process(LoadingTask loadingTask) throws WarehouseException {
+    public void process(LoadingTask loadingTask) throws WarehouseException {
 
 
         //Retrieve Parcels from order
@@ -73,11 +75,13 @@ public class LoadingStation extends Station<LoadingTask> {
             loadVehicle(loadingBaysWithMatchingDestination, parcelList);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.LOADED);
 
+            System.out.println("LoadingStation finished loading. Parcel is out for delivery.");
+
             startDeliveryById("Car00001");
             currentOrder.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
             writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed.", "warehouse");
 
-            return loadingTask.getOrder();
+
         } catch (NoMoreSpaceException e) {
             currentOrder.setOrderStatusEnum(OrderStatusEnum.LOADING);
             writeLogEntry("WARN: " + e.getMessage());
@@ -91,8 +95,8 @@ public class LoadingStation extends Station<LoadingTask> {
             currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
             throw new WarehouseException("a Generic error inside the warehosue occured.");
         }
-        // Returning updated Order with exception state
-        return currentOrder;
+        System.out.println("LoadingStation finished delivering.");
+        // No putting into queues here, because order is finished
     }
 
 

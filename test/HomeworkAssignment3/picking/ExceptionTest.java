@@ -1,5 +1,7 @@
 package HomeworkAssignment3.picking;
 
+import HomeworkAssignment3.picking.exceptions.ItemNotFoundException;
+import HomeworkAssignment3.picking.exceptions.PickingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +37,7 @@ public class ExceptionTest {
     }
 
     @Test
-    public void testExceptionChainingBehavior() {
+    public void testExceptionChainingBehavior() throws PickingException {
         try {
             throw new ItemNotFoundException("Item not found");
         } catch (ItemNotFoundException e) {

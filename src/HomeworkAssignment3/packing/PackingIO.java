@@ -29,27 +29,27 @@ public class PackingIO {
     public Path getLogPathFor(LocalDate d)     { return base.resolve(d.format(DAY) + ".log"); }
     public Path getExportPath(String orderNo)  { return base.getParent().resolve("exports").resolve(orderNo + ".txt"); }
 
-    public void searchLogsByLabel(String orderNumber) {
+    public void searchLogsByLabel(String orderNumber) throws PackingIoException {
         List<Path> labels = null;
         try {
             labels = findByRegex("labels[/\\\\]"+orderNumber+"\\.txt$");
         } catch (IOException e) {
             throw new PackingIoException("Find label failed for order "+orderNumber, e); // chaining
         }
-        labels.forEach(System.out::println);
+        //labels.forEach(System.out::println);
     }
 
-    public void searchLogsByDate(String date) {
+    public void searchLogsByDate(String date) throws PackingIoException {
         List<Path> hits = null;
         try {
             hits = findByRegex(date + "\\.log$"); // match file ending with that date
         } catch (IOException e) {
             throw new PackingIoException("Find logs by date failed for "+date, e);
         }
-        hits.forEach(System.out::println);
+        //hits.forEach(System.out::println);
     }
 
-    public Path exportPackingLog(String orderNumber){
+    public Path exportPackingLog(String orderNumber) throws PackingIoException {
         Path label = base.resolve("labels").resolve(orderNumber + ".txt");     // source
         Path dest  = base.getParent().resolve("exports").resolve(orderNumber + ".txt"); // logs/exports/...
         try {
@@ -62,7 +62,7 @@ public class PackingIO {
                     "Export failed: " + label + " → " + dest, e);
         }
     }
-    public void logPacking(String orderNumber, List<Parcel> parcels) {
+    public void logPacking(String orderNumber, List<Parcel> parcels) throws PackingIoException {
         int count = parcels.size();
         double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
 

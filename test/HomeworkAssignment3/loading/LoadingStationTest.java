@@ -3,6 +3,7 @@ package HomeworkAssignment3.loading;
 
 import HomeworkAssignment3.general.Employee;
 import HomeworkAssignment3.general.JobType;
+import HomeworkAssignment3.general.Task;
 import HomeworkAssignment3.loading.exceptions.DeliveryNotFoundException;
 import HomeworkAssignment3.loading.exceptions.NoBayException;
 import HomeworkAssignment3.loading.exceptions.NoDeliveryEmployeeException;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 public class LoadingStationTest {
 
     static LoadingStation loadingStation;
@@ -19,14 +23,19 @@ public class LoadingStationTest {
     static Van van01;
     static Employee employee01;
     static Employee employee02;
+    BlockingQueue<Task> ingoingQueue;
+    BlockingQueue<Task> outgoingQueue;
 
     @BeforeEach
     void setUp(){
+        ingoingQueue = new ArrayBlockingQueue<>(1);
+        outgoingQueue = new ArrayBlockingQueue<>(1);
+
         truck01 = new Truck(95.0,"Dortmund");
         van01 = new Van(33.0,"Berlin");
         employee01 = new Employee("Lennart Ziehm", 27, JobType.DELIVERY);
         employee02 = new Employee("Lennart Ziehm", 27, JobType.LOADER);
-        loadingStation = new LoadingStation(1);
+        loadingStation = new LoadingStation(1, ingoingQueue, outgoingQueue);
     }
 
     // Test 1 Dock Vehicle into Bay
