@@ -76,10 +76,7 @@ package HomeworkAssignment3.logging;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -91,6 +88,10 @@ public class LogFiles {
     private final Path baseDir;
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public LogFiles() {
+        this.baseDir = Paths.get("logs");
+    }
 
     public LogFiles(Path baseDir) {
         this.baseDir = baseDir;
@@ -109,6 +110,7 @@ public class LogFiles {
         Files.createDirectories(dir);
         return dir.resolve(DAY.format(day) + ".log");
     }
+
 
     // Append a line of text to the specified log file
     public void appendLine(Path file, String text) throws IOException {
@@ -180,5 +182,22 @@ public class LogFiles {
         try (var reader = Files.newBufferedReader(logFile, StandardCharsets.UTF_8)) {
             return reader.lines().toList();
         }
+    }
+
+    //----------------Implementation Lennart---------------
+
+    public void writeLogEntry(String textToLog, String subpath) {
+        try {
+            Path pathToWrite = pathFor(subpath, LocalDate.now());
+            appendLine(pathToWrite, LocalTime.now() + ": " + textToLog);
+        } catch (IOException e) {
+            // Log not possible
+        }
+    }
+
+    public Path pathFor(String subPath, LocalDate day) throws IOException {
+        Path dir = baseDir.resolve(subPath);
+        Files.createDirectories(dir);
+        return dir.resolve(DAY.format(day) + ".log");
     }
 }

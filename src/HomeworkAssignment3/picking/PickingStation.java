@@ -11,6 +11,7 @@ import HomeworkAssignment3.picking.exceptions.PickingException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.concurrent.BlockingQueue;
 
@@ -35,7 +36,7 @@ public class PickingStation extends Station<PickingTask> {
     public void process(PickingTask task) throws WarehouseException {
         System.out.println("PickingStation starts picking.");
         try {
-            Path logFile = logger.pathFor("picking", "PickingStation", LocalDate.now());
+            Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
             // Create log file path for today's picking session
 
             // Log start of task
@@ -59,7 +60,7 @@ public class PickingStation extends Station<PickingTask> {
 
         } catch (PickingException e) {
             try {
-                Path logFile = logger.pathFor("picking", "PickingStation", LocalDate.now());
+                Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
                 logger.appendLine(logFile, logger.line("PickingStation", "finished",
                         "Picked by " + task.getPickerName()));
             } catch (IOException ex) {

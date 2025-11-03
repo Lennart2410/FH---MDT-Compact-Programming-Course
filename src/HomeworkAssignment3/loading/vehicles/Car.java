@@ -13,17 +13,23 @@ public abstract class Car {
     private String desination;
     private final List<Parcel> parcelList;
     private static int globalCarId = 0;
+    private  boolean currentlyDelivering;
 
     public Car(double totalCapacity, String destination) {
         id = "Car" + String.format("%05d", globalCarId++);
         this.totalCapacity = totalCapacity;
         this.desination = destination;
-        this.currentCapacity = 0;
+        this.currentCapacity = totalCapacity;
         this.parcelList = new ArrayList<>();
+        this.currentlyDelivering = false;
     }
 
     public void drive() {
-
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getId() {
@@ -52,5 +58,13 @@ public abstract class Car {
 
     public void addParcel(Parcel parcel) {
         parcelList.add(parcel);
+    }
+
+    public boolean isCurrentlyDelivering() {
+        return currentlyDelivering;
+    }
+
+    public void setCurrentlyDelivering(boolean currentlyDelivering) {
+        this.currentlyDelivering = currentlyDelivering;
     }
 }

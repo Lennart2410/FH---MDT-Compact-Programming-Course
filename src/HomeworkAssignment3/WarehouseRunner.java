@@ -12,7 +12,7 @@ public class WarehouseRunner {
             LogFiles logger = new LogFiles(Path.of("logs"));
 
             // Create log file path
-            Path logFile = logger.pathFor("system", "WarehouseRunner", LocalDate.now());
+            Path logFile = logger.pathFor("WarehouseRunner", null, LocalDate.now());
 
             // Write startup log entry
             logger.appendLine(logFile, logger.line("WarehouseRunner", "startup", "System initialized"));

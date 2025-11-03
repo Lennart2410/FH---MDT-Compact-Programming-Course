@@ -21,7 +21,7 @@ public class PackingIO {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public PackingIO(Path logsRoot) {
-        this.base = logsRoot.resolve("packing");
+        this.base = logsRoot.resolve("PackingStation");
     }
     // PackingIO — add helpers
     public Path getLabelPath(String orderNo)   { return base.resolve("labels").resolve(orderNo + ".txt"); }

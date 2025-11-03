@@ -27,7 +27,7 @@ public class LoadingStationTest {
     BlockingQueue<Task> outgoingQueue;
 
     @BeforeEach
-    void setUp(){
+    void setUp() throws NoBayException {
         ingoingQueue = new ArrayBlockingQueue<>(1);
         outgoingQueue = new ArrayBlockingQueue<>(1);
 
