@@ -74,7 +74,7 @@ public class LoadingStationTest {
         Assertions.assertEquals(1, loadingStation.getEmployeeList().size());
 
         String truck01Id = truck01.getId();
-        loadingStation.startDeliveryById(truck01Id);
+        loadingStation.startDeliveryById(truck01Id,null);
     }
 
     // Test 4 Start delivery by id deliverynotfound exception
@@ -91,12 +91,12 @@ public class LoadingStationTest {
         Assertions.assertEquals(1, loadingStation.getEmployeeList().size());
 
         String truck01Id = "12345678";
-        Assertions.assertThrows(DeliveryNotFoundException.class, ()->loadingStation.startDeliveryById(truck01Id));
+        Assertions.assertThrows(DeliveryNotFoundException.class, ()->loadingStation.startDeliveryById(truck01Id,null));
     }
 
     // Test 5 Start delivery by id noemployee exception
     @Test
-    public void startDeliveryById_NoDeliveryEmployeeException() throws NoBayException, DeliveryNotFoundException, NoDeliveryEmployeeException {
+    public void startDeliveryById_NoDeliveryEmployeeException() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
@@ -109,6 +109,6 @@ public class LoadingStationTest {
 
         String truck01Id = truck01.getId();
 
-        Assertions.assertThrows(NoDeliveryEmployeeException.class, ()->loadingStation.startDeliveryById(truck01Id));
+        Assertions.assertThrows(NoDeliveryEmployeeException.class, ()->loadingStation.startDeliveryById(truck01Id,null));
     }
 }
