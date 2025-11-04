@@ -14,6 +14,7 @@ import HomeworkAssignment3.picking.exceptions.PickingException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -27,13 +28,14 @@ public class PickingStation extends Station<PickingTask> {
     private final LogFiles logger = new LogFiles(Path.of("logs"));
 
     // List of available pickers
-    private final List<Employee> pickers = List.of(
-            new Employee("Alice", 28, JobType.PICKER),
-            new Employee("Bob", 32, JobType.PICKER),
-            new Employee("Charlie", 25, JobType.PICKER));
+    private final List<Employee> pickers = new ArrayList<>();
+
 
     public PickingStation(BlockingQueue<Task> in, BlockingQueue<Task> out) {
         super(in, out);
+        pickers.add(new Employee("Alice", 28, JobType.PICKER));
+        pickers.add(new Employee("Bob", 32, JobType.PICKER));
+        pickers.add(new Employee("Charlie", 25, JobType.PICKER));
     }
 
     @Override
