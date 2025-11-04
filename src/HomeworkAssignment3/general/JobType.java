@@ -4,5 +4,5 @@ public enum JobType {
     PICKER,
     PACKER,
     LOADER,
-    AGV_OPERATOR
+    DELIVERY
 }
