@@ -1,5 +1,5 @@
-package HomeworkAssignment3.agv;
 
+package HomeworkAssignment3.agv;
 
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.Station;
@@ -13,49 +13,66 @@ import HomeworkAssignment3.packing.PackingTask;
 import java.io.*;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 
 public class AGVRunner extends Station<AgvTask> {
     private final LogFiles logFiles;
+    private final List<AGV> agvFleet = new ArrayList<>();
 
     public AGVRunner(Path logBaseDir, BlockingQueue<Task> in, BlockingQueue<Task> out) {
-        super(in,out);
+        super(in, out);
         this.logFiles = new LogFiles(logBaseDir);
+        agvFleet.add(new AGV("AGV1"));
+        agvFleet.add(new AGV("AGV2"));
+        agvFleet.add(new AGV("AGV3"));
     }
 
     @Override
     public void process(AgvTask agvTask) throws WarehouseException {
-        System.out.println("AGVRunner is running a new task.");
-        try {
-            String logEntry = String.format("AGV %s transporting from %s to %s",
-                    agvTask.getAgvId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+        Optional<AGV> availableAgv = agvFleet.stream()
+                .filter(agv -> !agv.isBusy())
+                .findFirst();
 
-            Path logPath = logFiles.pathFor("AGV", agvTask.getAgvId(), LocalDate.now());
-            logFiles.appendLine(logPath, logEntry);
-
-
-            Thread.sleep(2000);
-
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("AGV transport interrupted", e);
-        } catch (Exception e) {
-            throw new RuntimeException("Transport failed for AGV " + agvTask.getAgvId(), e);
+        if (availableAgv.isEmpty()) {
+            System.out.println("No available AGV. Task will wait.");
+            return;
         }
-        try {
-            if (agvTask.getDestinationLocation().equals("packing-station")) {
-                System.out.println("AGVRunner is finished transporting. Added a new packing task.");
-                addToQueue(new PackingTask(agvTask.getOrder()));
-            } else if (agvTask.getDestinationLocation().equals("loading-station")) {
-                System.out.println("AGVRunner is finished transporting. Added a new loading task.");
-                addToQueue(new LoadingTask(agvTask.getOrder()));
-            } else {
-                // No correct destination was set. Throwing an exception.
-                throw new NoDestinationException("The destination location of the previous task was not set. It was: " + agvTask.getDestinationLocation());
+
+        AGV agv = availableAgv.get();
+        agv.setBusy(true);
+        agvTask.setAgvId(agv.getId());
+
+        new Thread(() -> {
+            try {
+                System.out.println("AGVRunner is running a new task with " + agv.getId());
+
+                String logEntry = String.format("AGV %s transporting from %s to %s",
+                        agv.getId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+
+                Path logPath = logFiles.pathFor("AGV", agv.getId(), LocalDate.now());
+                logFiles.appendLine(logPath, logEntry);
+
+                Thread.sleep(2000); // Simulate transport
+
+                if (agvTask.getDestinationLocation().equals("packing-station")) {
+                    System.out.println("AGV " + agv.getId() + " finished transporting. Added a new packing task.");
+                    addToQueue(new PackingTask(agvTask.getOrder()));
+                } else if (agvTask.getDestinationLocation().equals("loading-station")) {
+                    System.out.println("AGV " + agv.getId() + " finished transporting. Added a new loading task.");
+                    addToQueue(new LoadingTask(agvTask.getOrder()));
+                } else {
+                    throw new NoDestinationException("Invalid destination: " + agvTask.getDestinationLocation());
+                }
+
+            } catch (Exception e) {
+                System.out.println("Transport failed for AGV " + agv.getId() + ": " + e.getMessage());
+            } finally {
+                agv.setBusy(false);
             }
-        }catch (NoDestinationException e){
-            throw new WarehouseException(e.getMessage(),e);
-        }
+        }).start();
     }
 
     // HA1: Byte stream simulation for AGV task exchange
@@ -82,7 +99,6 @@ public class AGVRunner extends Station<AgvTask> {
         }
     }
 
-    // Optional: expose logFiles for archiving or testing
     public LogFiles getLogFiles() {
         return logFiles;
     }
