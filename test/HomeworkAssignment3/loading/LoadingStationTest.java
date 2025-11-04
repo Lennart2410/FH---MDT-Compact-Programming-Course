@@ -96,7 +96,7 @@ public class LoadingStationTest {
 
     // Test 5 Start delivery by id noemployee exception
     @Test
-    public void startDeliveryById_NoDeliveryEmployeeException() throws NoBayException, DeliveryNotFoundException, NoDeliveryEmployeeException {
+    public void startDeliveryById_NoDeliveryEmployeeException() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
