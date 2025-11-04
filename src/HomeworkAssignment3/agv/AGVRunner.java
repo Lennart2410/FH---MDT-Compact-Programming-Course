@@ -1,9 +1,7 @@
 
 package HomeworkAssignment3.agv;
 
-import HomeworkAssignment3.general.Order;
-import HomeworkAssignment3.general.Station;
-import HomeworkAssignment3.general.Task;
+import HomeworkAssignment3.general.*;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.loading.LoadingTask;
 import HomeworkAssignment3.loading.exceptions.NoDestinationException;
@@ -32,45 +30,30 @@ public class AGVRunner extends Station<AgvTask> {
 
     @Override
     public void process(AgvTask agvTask) throws WarehouseException {
-        Optional<AGV> availableAgv = agvFleet.stream()
-                .filter(agv -> !agv.isBusy())
-                .findFirst();
-
-        if (availableAgv.isEmpty()) {
-            System.out.println("No available AGV. Task will wait.");
-            return;
-        }
-
-        AGV agv = availableAgv.get();
-        agv.setBusy(true);
-        agvTask.setAgvId(agv.getId());
-
         new Thread(() -> {
             try {
-                System.out.println("AGVRunner is running a new task with " + agv.getId());
+                System.out.println("AGVRunner is running a new task with " + agvTask.getAgvId());
 
                 String logEntry = String.format("AGV %s transporting from %s to %s",
-                        agv.getId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+                        agvTask.getAgvId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
 
-                Path logPath = logFiles.pathFor("AGV", agv.getId(), LocalDate.now());
+                Path logPath = logFiles.pathFor("AGV", agvTask.getAgvId(), LocalDate.now());
                 logFiles.appendLine(logPath, logEntry);
 
                 Thread.sleep(2000); // Simulate transport
 
                 if (agvTask.getDestinationLocation().equals("packing-station")) {
-                    System.out.println("AGV " + agv.getId() + " finished transporting. Added a new packing task.");
+                    System.out.println("AGV " + agvTask.getAgvId() + " finished transporting. Added a new packing task.");
                     addToQueue(new PackingTask(agvTask.getOrder()));
                 } else if (agvTask.getDestinationLocation().equals("loading-station")) {
-                    System.out.println("AGV " + agv.getId() + " finished transporting. Added a new loading task.");
+                    System.out.println("AGV " + agvTask.getAgvId() + " finished transporting. Added a new loading task.");
                     addToQueue(new LoadingTask(agvTask.getOrder()));
                 } else {
                     throw new NoDestinationException("Invalid destination: " + agvTask.getDestinationLocation());
                 }
 
             } catch (Exception e) {
-                System.out.println("Transport failed for AGV " + agv.getId() + ": " + e.getMessage());
-            } finally {
-                agv.setBusy(false);
+                System.out.println("Transport failed for AGV " + agvTask.getAgvId() + ": " + e.getMessage());
             }
         }).start();
     }
@@ -101,5 +84,44 @@ public class AGVRunner extends Station<AgvTask> {
 
     public LogFiles getLogFiles() {
         return logFiles;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                // checks if an agv is currently available for the task
+                AGV agv = retrievePossibleAGV();
+                if (agv != null) {
+                    // If agv is available
+                    AgvTask task = (AgvTask) in.take();
+                    agv.setBusy(true);
+                    task.setAgvId(agv.getId());
+                    // start the concrete process
+                    process(task);
+                    // when the process / thread is finished, set the agv to unassigned.
+                    agv.setBusy(false);
+                } else {
+                    System.out.println("No available picker. Task will wait.");
+                }
+            }
+        } catch (InterruptedException stop) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            // As a safety net, if a station throws, convert task to EXCEPTION
+            e.printStackTrace();
+        }
+    }
+
+    public AGV retrievePossibleAGV() {
+        Optional<AGV> availableAgv = agvFleet.stream()
+                .filter(agv -> !agv.isBusy())
+                .findFirst();
+
+        if (availableAgv.isEmpty()) {
+            System.out.println("No available AGV. Task will wait.");
+            return null;
+        }
+        return availableAgv.get();
     }
 }
