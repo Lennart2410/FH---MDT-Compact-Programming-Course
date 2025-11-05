@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 public class PackingTask extends Task {
     private final BoxingService boxing;
     private final Path packBase;
+    private  String packerID;
     // Specific content of the PackingTask
     // Should contain attributes which only accounts to the PackingTask and not the
     // generic Task
@@ -28,4 +29,11 @@ public class PackingTask extends Task {
         return packBase;
     }
 
+    public String getPackerID() {
+        return packerID;
+    }
+
+    public void setPackerID(String packerID) {
+        this.packerID = packerID;
+    }
 }

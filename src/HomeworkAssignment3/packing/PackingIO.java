@@ -25,7 +25,6 @@ public class PackingIO {
     }
     // PackingIO — add helpers
     public Path getLabelPath(String orderNo)   { return base.resolve("labels").resolve(orderNo + ".txt"); }
-    public Path getManifestPath(String orderNo){ return base.resolve("manifests").resolve(orderNo + ".bin"); }
     public Path getLogPathFor(LocalDate d)     { return base.resolve(d.format(DAY) + ".log"); }
     public Path getExportPath(String orderNo)  { return base.getParent().resolve("exports").resolve(orderNo + ".txt"); }
 
@@ -62,13 +61,13 @@ public class PackingIO {
                     "Export failed: " + label + " → " + dest, e);
         }
     }
-    public void logPacking(String orderNumber, List<Parcel> parcels) throws PackingIoException {
+    public void logPacking(String orderNumber, String packerID, List<Parcel> parcels) throws PackingIoException {
         int count = parcels.size();
         double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
 
         try {
-            logEvent("Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
-            writeLabel(orderNumber, count, total);
+            logEvent(packerID+ " Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
+            writeLabel(orderNumber,packerID, count, total);
         } catch (IOException e) {
             throw new PackingIoException("Writing packing artifacts failed for "+orderNumber, e);        }
     }
@@ -84,12 +83,13 @@ public class PackingIO {
     }
 
     /* ---- LABEL per order (character stream) ---- */
-    public void writeLabel(String orderNo, int parcels, double totalKg) throws IOException {
+    public void writeLabel(String orderNo,String packerID, int parcels, double totalKg) throws IOException {
         Path dir = base.resolve("labels");
         Files.createDirectories(dir);
         Path txt = dir.resolve(orderNo + ".txt");
         try (var w = Files.newBufferedWriter(txt, StandardCharsets.UTF_8)) {
             w.write("=== PACKING LABEL ===\n");
+            w.write("Packer Machine : " + packerID + "\n");
             w.write("Order   : " + orderNo + "\n");
             w.write("Parcels : " + parcels + "\n");
             w.write(String.format("TotalKg : %.2f%n", totalKg));

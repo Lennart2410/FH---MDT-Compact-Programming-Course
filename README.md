@@ -70,7 +70,7 @@ runner that will transport the parcels to the Loading station.
 #### Loading station
 
 The Loading station is the final part inside the warehouse system. It takes the parcels and puts them into delivery
-vehicles based up on weight of the parcels and their destination. Two kind of employees work at the Loading station.
+vehicles based up on weight of the parcels and their destination. Two workerType of employees work at the Loading station.
 Loader employees fill up the delivery vehicles with parcels and make them ready to be delivered. Driver employees take
 care of delivering the loaded parcels to the customer.
 
