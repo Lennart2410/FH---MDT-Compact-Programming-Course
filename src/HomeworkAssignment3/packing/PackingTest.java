@@ -131,7 +131,7 @@ public class PackingTest {
         PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue);
         station.process(task);
 
-        Path label = temp.resolve("packing")
+        Path label = temp.resolve("PackingStation")
                 .resolve("labels")
                 .resolve(order.getOrderNumber() + ".txt");
         List<String> lines = Files.readAllLines(label);
