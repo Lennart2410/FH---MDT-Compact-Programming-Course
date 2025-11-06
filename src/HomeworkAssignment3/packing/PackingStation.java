@@ -80,7 +80,7 @@ public class PackingStation extends Station<PackingTask> {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                // checks if a picker is currently available for the task
+                // checks if a packer is currently available for the task
                 PackingWorker packer = retrievePossibleWorker();
                 if (packer != null) {
                     // If a packer is available
