@@ -1,6 +1,7 @@
 package HomeworkAssignment3.agv;
 
 
+import HomeworkAssignment3.agv.exceptions.AGVException;
 import HomeworkAssignment3.general.*;
 import HomeworkAssignment3.loading.LoadingStation;
 import HomeworkAssignment3.loading.vehicles.Truck;
@@ -23,7 +24,7 @@ public class AGVRunnerTest {
     BlockingQueue<Task> outgoingQueue;
 
     @BeforeEach
-    void setUp(){
+    void setUp() throws AGVException {
         ingoingQueue = new ArrayBlockingQueue<>(1);
         outgoingQueue = new ArrayBlockingQueue<>(1);
 
@@ -33,13 +34,13 @@ public class AGVRunnerTest {
 
     @Test
     public void testProcessReturnsOrder() {
-        AgvTask task = new AgvTask(order, "A", "B", "AGV-01");
+        AgvTask task = new AgvTask(order, "A", "B");
         //assertEquals(order, runner.process(task));
     }
 
     @Test
     public void testSimulateByteStream() {
-        AgvTask task = new AgvTask(order, "A", "B", "AGV-01");
+        AgvTask task = new AgvTask(order, "A", "B");
         assertDoesNotThrow(() -> runner.simulateByteStream(task));
     }
 
@@ -58,7 +59,7 @@ public class AGVRunnerTest {
     @Test
     public void testProcessHandlesInterruptedException() {
         Thread.currentThread().interrupt(); // Simulate interruption
-        AgvTask task = new AgvTask(order, "A", "B", "AGV-01");
+        AgvTask task = new AgvTask(order, "A", "B");
         assertThrows(RuntimeException.class, () -> runner.process(task));
     }
 

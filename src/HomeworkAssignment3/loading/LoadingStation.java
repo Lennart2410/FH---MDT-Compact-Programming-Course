@@ -133,7 +133,6 @@ public class LoadingStation extends Station<LoadingTask> {
         for (LoadingBay loadingBay : loadingBaysWithMatchingDestination) {
             for (Parcel parcel : parcelList) {
                 logManager.writeLogEntry("Parcel " + parcel.getId() + " is trying to be loaded.", loadingStationUrl);
-                System.out.println(loadingBay.getOccupyingCar().getCurrentCapacity() +" > "+ parcel.getWeightKg());
                 if (loadingBay.getOccupyingCar().getCurrentCapacity() > parcel.getWeightKg()) {
                     carIdToStart = loadingBay.getOccupyingCar().getId();
 
@@ -170,7 +169,6 @@ public class LoadingStation extends Station<LoadingTask> {
 
         Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(() -> new NoDeliveryEmployeeException("There were no free employees who would could drive the delivery."));
 
-        // ToDo: Start Thread for delivering:
         deliveryExecutor.submit(()->{
             undockVehicleFromBay(deliveryVehicleToStart);
             deliveryEmployee.setCurrentlyOccupied(true);
@@ -187,8 +185,6 @@ public class LoadingStation extends Station<LoadingTask> {
                 throw new RuntimeException(e);
             }
         });
-
-        // ToDo: End thread for delivering.
     }
 
 

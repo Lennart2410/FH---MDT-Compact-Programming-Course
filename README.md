@@ -1,45 +1,6 @@
 # FH---MDT-Compact-Programming-Course
 
-Group work assignments for the mandatory Compact Programming Course
-
-### Self assignment 1
-
-    - Problem 1: Yasaman OladzadAbasabadi 7223229
-    - Problem 2: Lennart Ziehm 7201519
-    - Problem 3: Niloufar OladzadAbasabadi 7223228
-    - Problem 4: Lennart Ziehm 7201519
-
-### Self assignment 2
-
-    - Class implementation part 1: Marianne Nosseir 7224660
-        - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
-    - Class implementation part 2: Lennart Ziehm 7201519
-        - Implementation of AGV and Position classes
-    - Self designed analysis task 1: Yasaman OladzadAbasabadi 7223229
-        - Analysis of SingleOperation & IndustrialProcess classes. 
-            - Calculation of the average nominalTimeMinutes of all Operations
-            - Calculation of the fastest and the slowest Operation
-            - Printing a sorted list in the order of finish time of each SingleOperation
-    - Self designed analysis task 2: Niloufar OladzadAbasabadi 7223228
-        - Analysis of the AGV class. Test for checking:
-            - if any AGV has less than 20 percent of battery left
-            - if any AGV is used multiple time for different operations
-            - which AGV is the fastest overall
-
-### Self assignment 3
-
-    - Lennart Ziehm 7201519: Implementation of HardwareResources, NonHumanResources, Resource + UML-Diagram
-    - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
-    - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
-    - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
-
-#### UML-Diagram of Self Assignment 3
-
-![UML-Diagram of Self Assignment 3](./src/SelfAssignment3/UML-SA.drawio.png)
-
-*All Getter and Setter are represented by <<get>> or <<set>> in order to keep the UML-Diagram structured.
-
-** Abstract classes and methods are represented by {abstract} instead of just being italic for visibility purpose.
+Group work assignments for the Java Compact Programming Course
 
 ### Project Requirements - Amazon Fulfillment Center
 
@@ -95,10 +56,12 @@ care of delivering the loaded parcels to the customer.
 
 ### Homework assignment 3
 
-    - Lennart Ziehm 7201519: LoadingStation and related classes
+    - Lennart Ziehm 7201519: LoadingStation and related classes & AGV energy loading
     - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
+
+Answers to the questions regarding the Home Assignment 3 can be found under [src/HomeworkAssignment3/home-assignment3-answers.md](src/HomeworkAssignment3/homework-assigment3-answers.md)
 
 ### Capstone project
 
@@ -106,4 +69,40 @@ care of delivering the loaded parcels to the customer.
     - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
+
+---
+
+## Preparing tasks
+
+### Self assignment 1
+
+    - Problem 1: Yasaman OladzadAbasabadi 7223229
+    - Problem 2: Lennart Ziehm 7201519
+    - Problem 3: Niloufar OladzadAbasabadi 7223228
+    - Problem 4: Lennart Ziehm 7201519
+
+### Self assignment 2
+
+    - Class implementation part 1: Marianne Nosseir 7224660
+        - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
+    - Class implementation part 2: Lennart Ziehm 7201519
+        - Implementation of AGV and Position classes
+    - Self designed analysis task 1: Yasaman OladzadAbasabadi 7223229
+        - Analysis of SingleOperation & IndustrialProcess classes. 
+            - Calculation of the average nominalTimeMinutes of all Operations
+            - Calculation of the fastest and the slowest Operation
+            - Printing a sorted list in the order of finish time of each SingleOperation
+    - Self designed analysis task 2: Niloufar OladzadAbasabadi 7223228
+        - Analysis of the AGV class. Test for checking:
+            - if any AGV has less than 20 percent of battery left
+            - if any AGV is used multiple time for different operations
+            - which AGV is the fastest overall
+
+### Self assignment 3
+
+    - Lennart Ziehm 7201519: Implementation of HardwareResources, NonHumanResources, Resource + UML-Diagram
+    - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
+    - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
+    - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
+
 

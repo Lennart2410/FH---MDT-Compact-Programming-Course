@@ -1,6 +1,10 @@
 
 package HomeworkAssignment3.agv;
 
+import HomeworkAssignment3.agv.energyloading.AGVEnergyStation;
+import HomeworkAssignment3.agv.energyloading.LoadingSlot;
+import HomeworkAssignment3.agv.exceptions.AGVException;
+import HomeworkAssignment3.agv.exceptions.EnergyStationException;
 import HomeworkAssignment3.general.*;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.loading.LoadingTask;
@@ -13,47 +17,57 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 
 public class AGVRunner extends Station<AgvTask> {
     private final LogFiles logFiles;
     private final List<AGV> agvFleet = new ArrayList<>();
+    private final AGVEnergyStation agvEnergyStation = new AGVEnergyStation();
 
-    public AGVRunner(Path logBaseDir, BlockingQueue<Task> in, BlockingQueue<Task> out) {
+    public AGVRunner(Path logBaseDir, BlockingQueue<Task> in, BlockingQueue<Task> out) throws AGVException {
         super(in, out);
         this.logFiles = new LogFiles(logBaseDir);
         agvFleet.add(new AGV("AGV1"));
         agvFleet.add(new AGV("AGV2"));
         agvFleet.add(new AGV("AGV3"));
+
+        try {
+            agvEnergyStation.addLoadingSlot(new LoadingSlot());
+        } catch (EnergyStationException e) {
+            throw new AGVException("There was a problem in creating the AGVRunner. ", e);
+        }
     }
 
     @Override
     public void process(AgvTask agvTask) throws WarehouseException {
         new Thread(() -> {
             try {
-                System.out.println("AGVRunner is running a new task with " + agvTask.getAgvId());
+                agvTask.getAgv().setBusy(true);
+                System.out.println("AGVRunner is running a new task with " + agvTask.getAgv().getId());
 
                 String logEntry = String.format("AGV %s transporting from %s to %s",
-                        agvTask.getAgvId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+                        agvTask.getAgv().getId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
 
-                Path logPath = logFiles.pathFor("AGV", agvTask.getAgvId(), LocalDate.now());
+                Path logPath = logFiles.pathFor("AGV", agvTask.getAgv().getId(), LocalDate.now());
                 logFiles.appendLine(logPath, logEntry);
 
                 Thread.sleep(2000); // Simulate transport
 
                 if (agvTask.getDestinationLocation().equals("packing-station")) {
-                    System.out.println("AGV " + agvTask.getAgvId() + " finished transporting. Added a new packing task.");
+                    System.out.println("AGV " + agvTask.getAgv().getId() + " finished transporting. Added a new packing task.");
                     addToQueue(new PackingTask(agvTask.getOrder()));
                 } else if (agvTask.getDestinationLocation().equals("loading-station")) {
-                    System.out.println("AGV " + agvTask.getAgvId() + " finished transporting. Added a new loading task.");
+                    System.out.println("AGV " + agvTask.getAgv().getId() + " finished transporting. Added a new loading task.");
                     addToQueue(new LoadingTask(agvTask.getOrder()));
                 } else {
                     throw new NoDestinationException("Invalid destination: " + agvTask.getDestinationLocation());
                 }
 
             } catch (Exception e) {
-                System.out.println("Transport failed for AGV " + agvTask.getAgvId() + ": " + e.getMessage());
+                System.out.println("Transport failed for AGV " + agvTask.getAgv().getId() + ": " + e.getMessage());
+            } finally {
+                agvTask.getAgv().setEnergyLevel(agvTask.getAgv().getEnergyLevel() - 15.0);
+                agvTask.getAgv().setBusy(false);
             }
         }).start();
     }
@@ -61,7 +75,7 @@ public class AGVRunner extends Station<AgvTask> {
     // HA1: Byte stream simulation for AGV task exchange
     public void simulateByteStream(AgvTask task) {
         try (var out = new ObjectOutputStream(new FileOutputStream("agvData.bin"));
-                var in = new ObjectInputStream(new FileInputStream("agvData.bin"))) {
+             var in = new ObjectInputStream(new FileInputStream("agvData.bin"))) {
 
             out.writeObject(task); // Serialize
             AgvTask received = (AgvTask) in.readObject(); // Deserialize
@@ -91,16 +105,24 @@ public class AGVRunner extends Station<AgvTask> {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 // checks if an agv is currently available for the task
-                AGV agv = retrievePossibleAGV();
-                if (agv != null) {
+                List<AGV> freeAgvList = retrievePossibleAGV();
+                if (!freeAgvList.isEmpty()) {
+                    AGV agv = freeAgvList.get(0);
                     // If agv is available
                     AgvTask task = (AgvTask) in.take();
-                    agv.setBusy(true);
-                    task.setAgvId(agv.getId());
+                    task.setAgv(agv);
                     // start the concrete process
                     process(task);
                     // when the process / thread is finished, set the agv to unassigned.
-                    agv.setBusy(false);
+
+                    freeAgvList = retrievePossibleAGV().stream().filter(freeAgv -> freeAgv.getEnergyLevel() < 20.0).toList();
+                    boolean isEnergyslotAvailable = !agvEnergyStation.getLoadingSlotList().stream().filter(energyslot -> !energyslot.isOccupation()).toList().isEmpty();
+
+                    if (in.isEmpty() && !freeAgvList.isEmpty() && isEnergyslotAvailable) {
+
+                        //Start loading process for agv
+                        startEnergyLoadingTask(freeAgvList.get(0));
+                    }
                 } else {
                     System.out.println("No available picker. Task will wait.");
                 }
@@ -113,15 +135,50 @@ public class AGVRunner extends Station<AgvTask> {
         }
     }
 
-    public AGV retrievePossibleAGV() {
-        Optional<AGV> availableAgv = agvFleet.stream()
-                .filter(agv -> !agv.isBusy())
-                .findFirst();
+    public List<AGV> retrievePossibleAGV() {
+        return agvFleet.stream()
+                .filter(agv -> !agv.isBusy()).toList();
+    }
 
-        if (availableAgv.isEmpty()) {
-            System.out.println("No available AGV. Task will wait.");
-            return null;
-        }
-        return availableAgv.get();
+    public void startEnergyLoadingTask(AGV agv) {
+        new Thread(() -> {
+            agv.setBusy(true);
+            LoadingSlot nextLoadingSlot;
+            try {
+                nextLoadingSlot = agvEnergyStation.getLoadingSlotList().stream().findFirst().orElseThrow(() -> new EnergyStationException("There was no free energy station loading slot free."));
+            } catch (EnergyStationException e) {
+                throw new RuntimeException(e);
+            }
+
+            double missingEnergyLevel = 100.0 - agv.getEnergyLevel();
+            double minutesToReacharge = missingEnergyLevel / nextLoadingSlot.getLoadingSpeedPerMinute();
+            // If recharge needs 15 or more minutes and only queue still has some tasks
+            if (minutesToReacharge > 15.0 && !in.isEmpty()) {
+                agv.setBusy(false);
+                nextLoadingSlot.setOccupation(false);
+            } else {
+                nextLoadingSlot.setOccupation(true);
+                try {
+                    long sleepingSecondsInMS = (long) ((60 / minutesToReacharge) * 1000);
+                    Thread.sleep(sleepingSecondsInMS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    agv.setBusy(false);
+                    nextLoadingSlot.setOccupation(false);
+                }
+                // Fully recharged
+                agv.setEnergyLevel(agv.getEnergyLevel() + missingEnergyLevel);
+            }
+        });
+    }
+
+
+    public List<AGV> getAgvFleet() {
+        return agvFleet;
+    }
+
+    public AGVEnergyStation getAgvEnergyStation() {
+        return agvEnergyStation;
     }
 }

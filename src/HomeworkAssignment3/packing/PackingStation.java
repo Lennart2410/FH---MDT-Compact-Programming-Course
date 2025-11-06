@@ -67,7 +67,7 @@ public class PackingStation extends Station<PackingTask> {
                             packingTask.getOrder().getOrderNumber(), e);
         }
         System.out.println("PackingStation is finished packing into parcels. Putting task into agv queue.");
-        addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station", "AGV-01"));
+        addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station"));
     }
 
     private void LogPackingTask(PackingTask packingTask, List<Parcel> parcels) throws PackingException {

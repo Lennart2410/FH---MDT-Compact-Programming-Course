@@ -1,5 +1,6 @@
 package HomeworkAssignment3.picking;
 
+import HomeworkAssignment3.general.Employee;
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.Task;
 
@@ -11,12 +12,11 @@ public class PickingTask extends Task {
 
     private final String shelfLocation;
     private boolean itemAvailable;
-    private String pickerName; //
+    private Employee picker; //
 
-    public PickingTask(Order order, String shelfLocation, String pickerName, boolean itemAvailable) {
+    public PickingTask(Order order, String shelfLocation, boolean itemAvailable) {
         super(order);
         this.shelfLocation = shelfLocation;
-        this.pickerName = pickerName;
         this.itemAvailable = itemAvailable;
     }
 
@@ -24,12 +24,12 @@ public class PickingTask extends Task {
         return shelfLocation;
     }
 
-    public String getPickerName() {
-        return pickerName;
+    public Employee getPicker() {
+        return picker;
     }
 
-    public void setPickerName(String pickerName) {
-        this.pickerName = pickerName;
+    public void setPicker(Employee picker) {
+        this.picker = picker;
     }
 
     public boolean isItemAvailable() {

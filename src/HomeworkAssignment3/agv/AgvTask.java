@@ -7,15 +7,15 @@ import HomeworkAssignment3.general.Task;
 public class AgvTask extends Task {
     private final String startingLocation;
     private final String destinationLocation;
-    private String agvId;
+    private AGV agv;
 
     // Constructor with agvId (used when you already know which AGV will handle the
     // task)
-    public AgvTask(Order order, String startingLocation, String destinationLocation, String agvId) {
+    public AgvTask(Order order, String startingLocation, String destinationLocation, AGV agv) {
         super(order);
         this.startingLocation = startingLocation;
         this.destinationLocation = destinationLocation;
-        this.agvId = agvId;
+        this.agv = agv;
     }
 
     // constructor without agvId (used when AGV is assigned later)
@@ -23,7 +23,7 @@ public class AgvTask extends Task {
         super(order);
         this.startingLocation = startingLocation;
         this.destinationLocation = destinationLocation;
-        this.agvId = null;
+        this.agv = null;
     }
 
     public String getStartingLocation() {
@@ -34,11 +34,11 @@ public class AgvTask extends Task {
         return destinationLocation;
     }
 
-    public String getAgvId() {
-        return agvId;
+    public AGV getAgv() {
+        return agv;
     }
 
-    public void setAgvId(String agvId) {
-        this.agvId = agvId;
+    public void setAgv(AGV agv) {
+        this.agv = agv;
     }
 }

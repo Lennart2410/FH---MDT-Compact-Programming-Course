@@ -56,6 +56,6 @@ public class Warehouse {
 
     public void processOrder(Order order) throws WarehouseException {
         // Picking process from shelves
-        ingoingQueuePicking.add(new PickingTask(order, "Shelf-A3", "Yasaman", true));
+        ingoingQueuePicking.add(new PickingTask(order, "Shelf-A3",  true));
     }
 }

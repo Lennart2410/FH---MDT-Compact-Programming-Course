@@ -16,31 +16,31 @@ public class AgvTaskTest {
 
     @Test
     public void testGetOrder() {
-        AgvTask task = new AgvTask(sampleOrder, "A", "B", "AGV-01");
+        AgvTask task = new AgvTask(sampleOrder, "A", "B");
         assertEquals(sampleOrder, task.getOrder());
     }
 
     @Test
     public void testGetStartingLocation() {
-        AgvTask task = new AgvTask(sampleOrder, "Start", "End", "AGV-01");
+        AgvTask task = new AgvTask(sampleOrder, "Start", "End");
         assertEquals("Start", task.getStartingLocation());
     }
 
     @Test
     public void testGetDestinationLocation() {
-        AgvTask task = new AgvTask(sampleOrder, "Start", "End", "AGV-01");
+        AgvTask task = new AgvTask(sampleOrder, "Start", "End");
         assertEquals("End", task.getDestinationLocation());
     }
 
     @Test
     public void testGetAgvId() {
-        AgvTask task = new AgvTask(sampleOrder, "Start", "End", "AGV-99");
-        assertEquals("AGV-99", task.getAgvId());
+        AgvTask task = new AgvTask(sampleOrder, "Start", "End");
+        assertEquals("AGV-99", task.getAgv().getId());
     }
 
     @Test
     public void testSerializable() {
-        assertTrue(taskIsSerializable(new AgvTask(sampleOrder, "A", "B", "AGV-01")));
+        assertTrue(taskIsSerializable(new AgvTask(sampleOrder, "A", "B")));
     }
 
     private boolean taskIsSerializable(AgvTask task) {

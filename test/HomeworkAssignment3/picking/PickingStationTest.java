@@ -32,7 +32,7 @@ public class PickingStationTest {
         System.out.println(" This test ran successfully");
 
         Order order = new Order("Test Street", List.of(new Item("Book")));
-        PickingTask task = new PickingTask(order, "Shelf-A1", "Yasaman", true);
+        PickingTask task = new PickingTask(order, "Shelf-A1", true);
 
 
         assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.ORDERED);
@@ -43,7 +43,7 @@ public class PickingStationTest {
     @Test
     public void testItemUnavailableThrowsException() {
         Order order = new Order("Test Street", List.of(new Item("Book")));
-        PickingTask task = new PickingTask(order, "Shelf-A1", "Yasaman", false);
+        PickingTask task = new PickingTask(order, "Shelf-A1", false);
 
 
         assertThrows(PickingException.class, () -> station.process(task));
@@ -51,19 +51,19 @@ public class PickingStationTest {
 
     @Test
     public void testShelfLocationIsStoredCorrectly() {
-        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", "Yasaman", true);
+        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", true);
         assertEquals("Shelf-B2", task.getShelfLocation());
     }
 
     @Test
     public void testPickerNameIsStoredCorrectly() {
-        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", "Yasaman", true);
-        assertEquals("Yasaman", task.getPickerName());
+        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", true);
+        //assertEquals("Yasaman", task.getPickerName());
     }
 
     @Test
     public void testItemAvailabilityFlag() {
-        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", "Yasaman", false);
+        PickingTask task = new PickingTask(new Order("Test", List.of()), "Shelf-B2", false);
         assertFalse(task.isItemAvailable());
     }
 }

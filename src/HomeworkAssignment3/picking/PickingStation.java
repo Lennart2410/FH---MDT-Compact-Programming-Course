@@ -44,6 +44,7 @@ public class PickingStation extends Station<PickingTask> {
 
         new Thread(() -> {
             try {
+                task.getPicker().setCurrentlyOccupied(true);
                 Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
                 logger.appendLine(logFile, logger.line("PickingStation", "started",
                         "Order " + task.getOrder().toString()));
@@ -57,17 +58,17 @@ public class PickingStation extends Station<PickingTask> {
                 Thread.sleep(15000); // Simulate picking time
 
                 logger.appendLine(logFile, logger.line("PickingStation", "finished",
-                        "Picked by " + task.getPickerName()));
+                        "Picked by " + task.getPicker().getName()));
 
                 task.getOrder().setOrderStatusEnum(OrderStatusEnum.PICKED);
                 System.out.println("PickingStation finished picking. Putting task into AGV queue.");
-                addToQueue(new AgvTask(task.getOrder(), "shelves", "packing-station", "AGV-01"));
+                addToQueue(new AgvTask(task.getOrder(), "shelves", "packing-station"));
 
             } catch (PickingException e) {
                 try {
                     Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
                     logger.appendLine(logFile, logger.line("PickingStation", "finished",
-                            "Picked by " + task.getPickerName()));
+                            "Picked by " + task.getPicker().getName()));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -76,6 +77,9 @@ public class PickingStation extends Station<PickingTask> {
             } catch (Exception e) {
                 throw new RuntimeException("Unexpected error in PickingStation", e);
 
+            }
+            finally {
+                task.getPicker().setCurrentlyOccupied(false);
             }
         }).start();
 
@@ -90,12 +94,10 @@ public class PickingStation extends Station<PickingTask> {
                 if (picker != null) {
                     // If picker is available
                     PickingTask task = (PickingTask) in.take();
-                    picker.setCurrentlyOccupied(true);
-                    task.setPickerName(picker.getName());
+                    task.setPicker(picker);
                     // start the concrete process
                     process(task);
                     // when the process / thread is finished, set the picker to unassigned.
-                    picker.setCurrentlyOccupied(false);
                 } else {
                     System.out.println("No available picker. Task will wait.");
                 }
