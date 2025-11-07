@@ -38,36 +38,39 @@ public class PackingStation extends Station<PackingTask> {
     }
     @Override
     public void process(PackingTask packingTask) throws WarehouseException {
-        System.out.println("PackingStation starts packing.");
+        new Thread(() -> {
+        System.out.println("PackingStation starts packing with packer " +packingTask.getPackerID());
+            try {
+
+        final List<Parcel> parcels;
         try {
             Thread.sleep(10000);
+            parcels = packingTask.getBoxing().cartonize();
+            // Update order state
+            packingTask.getOrder().setOrderParcels(parcels);
+            packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
+            LogPackingTask(packingTask, parcels);
+            System.out.println("PackingStation is finished packing into parcels. Putting task into agv queue.");
+            addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station", "AGV-01"));
+
+        } catch (RuntimeException ex) {    // Boxing: if service fails, rethrow with context
+            throw new BoxingFailureException("Cartonization failed for " +
+                    packingTask.getOrder().getOrderNumber(), ex);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // Boxing: if service fails, rethrow with context
-        final List<Parcel> parcels;
-        try {
-            parcels = packingTask.getBoxing().cartonize();
-        } catch (RuntimeException ex) {
-            throw new BoxingFailureException("Cartonization failed for " +
-                    packingTask.getOrder().getOrderNumber(), ex);
-        }
-
-        // Update order state
-
-        packingTask.getOrder().setOrderParcels(parcels);
-        packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
-
-        // I/O sequence: multi-catch and rethrow as processing error
-        try {
-            LogPackingTask(packingTask, parcels);
-        } catch (PackingIoException | IllegalStateException e) { // multiple exceptions
-            throw new WarehouseException(
-                    "I/O sequence failed at packing stage for " +
-                            packingTask.getOrder().getOrderNumber(), e);
-        }
-        System.out.println("PackingStation is finished packing into parcels. Putting task into agv queue.");
-        addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station"));
+            } catch (PackingIoException | IllegalStateException e) { // multiple exceptions
+                try {
+                    throw new WarehouseException(
+                            "I/O sequence failed at packing stage for " +
+                                    packingTask.getOrder().getOrderNumber(), e);
+                } catch (WarehouseException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } catch (PackingException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     private void LogPackingTask(PackingTask packingTask, List<Parcel> parcels) throws PackingException {

@@ -62,6 +62,7 @@ public class PackingTest {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-" + order.getOrderNumber(), "S", 1.2));
         PackingTask task = new PackingTask(order);
+        task.setPackerID("M-1");
 
         station.process(task);
 
@@ -87,6 +88,7 @@ public class PackingTest {
             throw new IllegalStateException("scale offline");
         };
         PackingTask task = new PackingTask(order);
+        task.setPackerID("M-1");
 
         PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue);
         WarehouseException ex = assertThrows(WarehouseException.class, () -> station.process(task));
@@ -102,6 +104,7 @@ public class PackingTest {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-" + order.getOrderNumber(), "S", 1.0));
         PackingTask task = new PackingTask(order);
+        task.setPackerID("M-1");
 
         // IO test double: make only export fail
         PackingIO ioFailingExport = new PackingIO(temp) {
@@ -125,7 +128,7 @@ public class PackingTest {
         Order order = newOrder();
         BoxingService ok = () -> List.of(new Parcel("P-" + order.getOrderNumber(), "S", 1.0));
         PackingTask task = new PackingTask(order);
-
+        task.setPackerID("M-1");
         PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue);
         station.process(task);
 
