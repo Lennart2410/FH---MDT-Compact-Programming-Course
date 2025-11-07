@@ -25,6 +25,9 @@ public class LoadingStation extends Station<LoadingTask> {
     private final String warehouseUrl = "Warehouse";
     private final String loadingStationUrl = "LoadingStation";
     private final int maximumBayCapacity;
+    // autoDelivery enables instant delivery instead of checking for space inside the vehicle
+    private final boolean autoDelivery = true;
+
     private final ExecutorService deliveryExecutor = Executors.newCachedThreadPool();
 
 
@@ -80,6 +83,7 @@ public class LoadingStation extends Station<LoadingTask> {
 
             logManager.writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed and is ready for delivery.", warehouseUrl);
             if (isDeliveryReadyToStart(carIdToStart)) {
+                System.out.println("A delivery for Id " + carIdToStart + " is going to start.");
                 logManager.writeLogEntry("A delivery for Id " + carIdToStart + " is going to start.", loadingStationUrl);
                 startDeliveryById(carIdToStart, currentOrder);
             } else {
@@ -178,6 +182,7 @@ public class LoadingStation extends Station<LoadingTask> {
             deliveryEmployee.setCurrentlyOccupied(false);
             logManager.writeLogEntry("Completed the delivery for " + id + ".", loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
+            System.out.println("A delivery for Id " + id + " is finished.");
             try {
                 dockVehicleIntoBay(deliveryVehicleToStart);
             } catch (NoBayException e) {
@@ -196,7 +201,7 @@ public class LoadingStation extends Station<LoadingTask> {
 
     private boolean isDeliveryReadyToStart(String carIdToStart) throws CarNotFoundException {
         double currentCapacity = loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getId().equals(carIdToStart)).findFirst().orElseThrow(() -> new CarNotFoundException("The Car with the id " + carIdToStart + " could not be found.")).getOccupyingCar().getCurrentCapacity();
-        return currentCapacity > 30.0;
+        return autoDelivery ? autoDelivery :  currentCapacity < 30.0;
     }
 
 
