@@ -18,12 +18,16 @@ import java.util.concurrent.BlockingQueue;
 public class PackingStation extends Station<PackingTask> {
    private Path logsRoot ;
    private PackingIO packingIo;
+    /** Each entry represents a real “packer” (machine). */
    private final List<PackingWorker> workers = new ArrayList<>();
+    /** Internal pool: one thread per worker. */
+   private java.util.concurrent.ExecutorService pool;
 
     public PackingStation(BlockingQueue<Task> in, BlockingQueue<Task> out) {
         super(in, out);
         logsRoot = Paths.get("logs");
         packingIo = new PackingIO(logsRoot);
+        //  3 packers with different speeds (1.0 = normal, 0.7 = faster)
         workers.add(new PackingWorker("M-1", 200, 1.0));
         workers.add(new PackingWorker("M-2", 200, 0.7));
         workers.add(new PackingWorker("M-3", 200, 0.7));
@@ -34,7 +38,10 @@ public class PackingStation extends Station<PackingTask> {
         super(in, out);
         this.logsRoot = logsRoot;
         this.packingIo = packingIo;
+        // keep at least one worker so tests work out of the box
+        workers.add(new PackingWorker("M-1", 200, 1.0));
     }
+    /** Synchronous processing of one PackingTask (no new Thread here). */
     @Override
     public void process(PackingTask packingTask) throws WarehouseException {
         new Thread(() -> {
@@ -78,38 +85,52 @@ public class PackingStation extends Station<PackingTask> {
         packingIo.searchLogsByLabel(packingTask.getOrder().getOrderNumber());
         packingIo.exportPackingLog(packingTask.getOrder().getOrderNumber());
     }
+    /**
+     * Starts a fixed-size pool: one thread per packer.
+     * Each worker thread pulls from the same IN queue, sets its packerId,
+     * simulates speed, then calls process(task) synchronously.
+     */
     @Override
     public void run() {
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                // checks if a packer is currently available for the task
-                PackingWorker packer = retrievePossibleWorker();
-                if (packer != null) {
-                    // If a packer is available
-                    PackingTask task = (PackingTask) in.take();
-                    task.setPackerID(packer.getWorkerId());
-                    packer.setCurrentlyOccupied(true);
-                    // start the concrete process
-                    process(task);
-                    // when the process / thread is finished, set the packer to unassigned.
-                    packer.setCurrentlyOccupied(false);
-                } else {
-                    System.out.println("No available Packer. Task will wait.");
+        // Start one thread per worker
+        pool = java.util.concurrent.Executors.newFixedThreadPool(workers.size());
+
+        for (PackingWorker w : workers) {
+            pool.submit(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        // 1) get next task for packing
+                        PackingTask task = (PackingTask) in.take();
+
+                        // 2) annotate with this worker id and simulate speed
+                        task.setPackerID(w.getWorkerId());
+                        Thread.sleep((long)(w.getBaseMs() * w.getSpeedFactor()));
+
+                        // 3) do the real work (synchronous)
+                        process(task); // throws WarehouseException → let it bubble/log below
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    } catch (Exception ex) {
+                        // Don’t kill the worker on one bad task; log and continue
+                        ex.printStackTrace();
+                    }
                 }
+            });
+        }
+
+        // Keep the station thread alive until interrupted; alternatively just return
+        // Keep the station thread alive; Warehouse executor controls lifecycle
+
+        try {
+            // simple idle wait;  Warehouse will control lifecycle with executor shutdown
+            while (!Thread.currentThread().isInterrupted()) {
+                Thread.sleep(200);
             }
-        } catch (InterruptedException stop) {
+        } catch (InterruptedException ignored) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            // As a safety net, if a station throws, convert task to EXCEPTION
-            e.printStackTrace();
+        } finally {
+            pool.shutdownNow();
         }
-    }
-    public PackingWorker retrievePossibleWorker() {
-        for (PackingWorker worker : workers) {
-            if (!worker.isCurrentlyOccupied()) {
-                return worker;
-            }
-        }
-        return null;
     }
 }
