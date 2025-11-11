@@ -7,7 +7,6 @@ import HomeworkAssignment3.loading.exceptions.*;
 import HomeworkAssignment3.loading.vehicles.Car;
 import HomeworkAssignment3.loading.vehicles.Truck;
 import HomeworkAssignment3.loading.vehicles.Van;
-import HomeworkAssignment3.logging.LogFiles;
 import HomeworkAssignment3.packing.Parcel;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class LoadingStation extends Station<LoadingTask> {
     private List<Car> deliveryVehicles;
     private List<Employee> employeeList;
     private List<LoadingBay> loadingBayList;
-    private final LogFiles logManager = new LogFiles();
     private final String warehouseUrl = "Warehouse";
     private final String loadingStationUrl = "LoadingStation";
     private final int maximumBayCapacity;

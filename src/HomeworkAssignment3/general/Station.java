@@ -2,6 +2,7 @@ package HomeworkAssignment3.general;
 
 
 import HomeworkAssignment3.general.exceptions.WarehouseException;
+import HomeworkAssignment3.logging.LogFiles;
 
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -12,13 +13,13 @@ import java.util.concurrent.BlockingQueue;
  */
 public abstract class Station<T extends Task> implements IStation, Runnable {
     protected final String id;                    // station id (for logs)
-
+    protected final LogFiles logManager;
     protected final BlockingQueue<Task> in;        // input queue (inbox)
     protected final BlockingQueue<Task> out;
 
 
     public Station(BlockingQueue<Task> in, BlockingQueue<Task> out) {
-
+        logManager = new LogFiles();
         this.id = UUID.randomUUID().toString();
         this.in = in;
         this.out = out;
@@ -45,5 +46,9 @@ public abstract class Station<T extends Task> implements IStation, Runnable {
     @Override
     public void addToQueue(Task task) {
         out.add(task);
+    }
+
+    public LogFiles getLogManager() {
+        return logManager;
     }
 }

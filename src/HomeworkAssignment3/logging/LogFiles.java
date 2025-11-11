@@ -88,6 +88,7 @@ public class LogFiles {
     private final Path baseDir;
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final List<LogListener> listeners = new ArrayList<>();
 
     public LogFiles() {
         this.baseDir = Paths.get("logs");
@@ -97,8 +98,13 @@ public class LogFiles {
         this.baseDir = baseDir;
     }
 
+    public void addListener(LogListener listener) {
+        listeners.add(listener);
+    }
+
     // Format a log line with timestamp, actor, event, and detail
     public String line(String actor, String event, String detail) {
+        addLogInUi(actor,detail);
         return String.format("%s,%s,%s,%s", TIME.format(LocalTime.now()), actor, event, detail);
     }
 
@@ -189,15 +195,26 @@ public class LogFiles {
     public void writeLogEntry(String textToLog, String subpath) {
         try {
             Path pathToWrite = pathFor(subpath, LocalDate.now());
-            appendLine(pathToWrite, LocalTime.now() + ": " + textToLog);
+            appendLine(pathToWrite, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + textToLog);
         } catch (IOException e) {
             // Log not possible
         }
+        addLogInUi(subpath,LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + textToLog);
     }
 
     public Path pathFor(String subPath, LocalDate day) throws IOException {
         Path dir = baseDir.resolve(subPath);
         Files.createDirectories(dir);
         return dir.resolve(DAY.format(day) + ".log");
+    }
+
+    public List<LogListener> getListeners() {
+        return listeners;
+    }
+
+    private void addLogInUi(String station, String textToLog){
+        for (LogListener l : listeners) {
+            l.onLog(station, textToLog);
+        }
     }
 }

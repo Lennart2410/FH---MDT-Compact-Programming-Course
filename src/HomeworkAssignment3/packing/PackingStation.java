@@ -8,7 +8,6 @@ import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.packing.exceptions.BoxingFailureException;
 import HomeworkAssignment3.packing.exceptions.PackingIoException;
 import HomeworkAssignment3.packing.exceptions.PackingException;
-import HomeworkAssignment3.picking.PickingTask;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

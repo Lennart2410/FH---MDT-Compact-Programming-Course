@@ -51,11 +51,32 @@ public class Warehouse {
         exec.submit(agvRunnerPackToLoad);
         exec.submit(loadingStation);
         System.out.println("Warehouse systems starts");
-        processOrder(new Order("Example Street 1", itemList));
+        //processOrder(new Order("Example Street 1", itemList));
     }
 
     public void processOrder(Order order) throws WarehouseException {
         // Picking process from shelves
         ingoingQueuePicking.add(new PickingTask(order, "Shelf-A3",  true));
+    }
+
+
+    public PickingStation getPickingStation() {
+        return pickingStation;
+    }
+
+    public AGVRunner getAgvRunnerPickToPack() {
+        return agvRunnerPickToPack;
+    }
+
+    public PackingStation getPackingStation() {
+        return packingStation;
+    }
+
+    public AGVRunner getAgvRunnerPackToLoad() {
+        return agvRunnerPackToLoad;
+    }
+
+    public LoadingStation getLoadingStation() {
+        return loadingStation;
     }
 }

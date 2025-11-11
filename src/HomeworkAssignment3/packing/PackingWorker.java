@@ -1,4 +1,4 @@
-package HomeworkAssignment3.general;
+package HomeworkAssignment3.packing;
 
 public class PackingWorker {
 

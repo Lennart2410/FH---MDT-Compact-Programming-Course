@@ -18,7 +18,14 @@ public class WarehouseRunner {
             logger.appendLine(logFile, logger.line("WarehouseRunner", "startup", "System initialized"));
 
             // Start warehouse system
-            new Warehouse();
+            WarehouseSystemUI ui = new WarehouseSystemUI();
+            Warehouse warehouse = ui.startup();
+
+            warehouse.getPickingStation().getLogManager().addListener(ui);
+            warehouse.getAgvRunnerPickToPack().getLogManager().addListener(ui);
+            warehouse.getPackingStation().getLogManager().addListener(ui);
+            warehouse.getAgvRunnerPackToLoad().getLogManager().addListener(ui);
+            warehouse.getLoadingStation().getLogManager().addListener(ui);
 
         } catch (Exception e) {
             e.printStackTrace(); // Optional: log to console or fallback log

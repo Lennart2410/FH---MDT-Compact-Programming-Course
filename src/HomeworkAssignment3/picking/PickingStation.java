@@ -41,7 +41,6 @@ public class PickingStation extends Station<PickingTask> {
     @Override
     public void process(PickingTask task) throws WarehouseException {
         System.out.println("PickingStation received a task.");
-
         new Thread(() -> {
             try {
                 task.getPicker().setCurrentlyOccupied(true);
