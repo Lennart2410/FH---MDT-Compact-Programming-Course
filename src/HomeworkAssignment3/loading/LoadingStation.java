@@ -65,10 +65,10 @@ public class LoadingStation extends Station<LoadingTask> {
                 throw new NoParcelException("There were no parcels inside the order.");
             }
 
-            List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination("Dortmund");
+            List<LoadingBay> loadingBaysWithMatchingDestination = searchLoadingBayByDestination(currentOrder.getDestination());
             if (loadingBaysWithMatchingDestination.isEmpty()) {
                 logManager.writeLogEntry("ERROR: There were no delivery vehicles with a matching destination.", loadingStationUrl);
-                throw new NoDestinationException("There was no matching destination for this ");
+                throw new NoDestinationException("There was no matching car for the selected destination.");
             }
 
             String carIdToStart = loadVehicle(loadingBaysWithMatchingDestination, parcelList);
@@ -78,8 +78,8 @@ public class LoadingStation extends Station<LoadingTask> {
             currentOrder.setOrderStatusEnum(OrderStatusEnum.LOADED);
 
             System.out.println("LoadingStation finished loading. Parcel is ready for delivery.");
-
             logManager.writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed and is ready for delivery.", warehouseUrl);
+
             if (isDeliveryReadyToStart(carIdToStart)) {
                 System.out.println("A delivery for Id " + carIdToStart + " is going to start.");
                 logManager.writeLogEntry("A delivery for Id " + carIdToStart + " is going to start.", loadingStationUrl);
@@ -101,6 +101,10 @@ public class LoadingStation extends Station<LoadingTask> {
         } catch (CarNotFoundException e) {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             throw new WarehouseException("A generic error inside the warehouse occured.");
+        } catch (NoDestinationException e) {
+            logManager.writeLogEntry("WARN: " + e.getMessage() + " Put the Task into the queue once more.", loadingStationUrl);
+            loadingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
+            this.in.add(loadingTask);
         } catch (LoadingException | DeliveryException e) {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
@@ -152,9 +156,13 @@ public class LoadingStation extends Station<LoadingTask> {
                     logManager.writeLogEntry("Parcel " + parcel.getId() + " was loaded.", loadingStationUrl);
                     loadingEmployee.setCurrentlyOccupied(false);
 
-                }else{
+                } else {
                     logManager.writeLogEntry("Parcel: " + parcel.getId() + " did not fit into delivery vehicle: " + loadingBay.getOccupyingCar().getId() + ". Looking for another delivery vehicle.", loadingStationUrl);
                 }
+            }
+            //If Parcels are all loaded, stop outer loop
+            if(addedParcels.size() == parcelList.size()){
+                break;
             }
         }
 
@@ -171,12 +179,12 @@ public class LoadingStation extends Station<LoadingTask> {
 
         Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(() -> new NoDeliveryEmployeeException("There were no free employees who would could drive the delivery."));
 
-        deliveryExecutor.submit(()->{
+        deliveryExecutor.submit(() -> {
             undockVehicleFromBay(deliveryVehicleToStart);
             deliveryEmployee.setCurrentlyOccupied(true);
             logManager.writeLogEntry("Starting delivery with Id " + id + ".", loadingStationUrl);
             deliveryVehicleToStart.drive();
-            logManager.writeLogEntry("Delivery with Id " + id + " was successful.", loadingStationUrl);
+
             deliveryEmployee.setCurrentlyOccupied(false);
             logManager.writeLogEntry("Completed the delivery for " + id + ".", loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
@@ -187,6 +195,7 @@ public class LoadingStation extends Station<LoadingTask> {
                 currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
                 throw new RuntimeException(e);
             }
+            logManager.writeLogEntry("Delivery with id: " + id + " was successfully delivered.", warehouseUrl);
         });
     }
 
@@ -199,7 +208,7 @@ public class LoadingStation extends Station<LoadingTask> {
 
     private boolean isDeliveryReadyToStart(String carIdToStart) throws CarNotFoundException {
         double currentCapacity = loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getId().equals(carIdToStart)).findFirst().orElseThrow(() -> new CarNotFoundException("The Car with the id " + carIdToStart + " could not be found.")).getOccupyingCar().getCurrentCapacity();
-        return autoDelivery ? autoDelivery :  currentCapacity < 30.0;
+        return autoDelivery ? autoDelivery : currentCapacity < 30.0;
     }
 
 

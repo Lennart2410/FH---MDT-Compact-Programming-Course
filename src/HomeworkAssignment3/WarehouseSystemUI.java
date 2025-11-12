@@ -4,7 +4,6 @@ import HomeworkAssignment3.general.Item;
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.logging.LogListener;
-import HomeworkAssignment3.picking.PickingTask;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -127,7 +126,7 @@ public class WarehouseSystemUI extends JFrame implements LogListener {
             } catch (WarehouseException ex) {
                 throw new RuntimeException(ex);
             }
-            appendToLog(4, "New Order Created for address: " + address + " with items: " + items);
+            appendToLog(4, "New order created for address: " + address + " with " + items.size() + " items.");
 
 
             itemListModel.clear();

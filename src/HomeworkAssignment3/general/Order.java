@@ -22,7 +22,7 @@ public class Order {
 
     public Order(String destination, List<Item> items) {
         this.orderStatusEnum = OrderStatusEnum.ORDERED;
-        this.orderNumber = "ORD00" + UUID.randomUUID();
+        this.orderNumber = "ORD-" + UUID.randomUUID();
         this.destination = destination;
         this.items = items;
         this.totalWeight = 12;
