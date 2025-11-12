@@ -102,9 +102,7 @@ public class LoadingStation extends Station<LoadingTask> {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             throw new WarehouseException("A generic error inside the warehouse occured.");
         } catch (NoDestinationException e) {
-            logManager.writeLogEntry("WARN: " + e.getMessage() + " Put the Task into the queue once more.", loadingStationUrl);
-            loadingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
-            this.in.add(loadingTask);
+            logManager.writeLogEntry("ERROR: " + e.getMessage() + " Put the Task into the queue once more.", loadingStationUrl);
         } catch (LoadingException | DeliveryException e) {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
