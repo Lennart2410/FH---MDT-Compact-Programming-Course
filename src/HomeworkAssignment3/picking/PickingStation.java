@@ -47,10 +47,12 @@ public class PickingStation extends Station<PickingTask> {
                 Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
                 logger.appendLine(logFile, logger.line("PickingStation", "started",
                         "Order " + task.getOrder().toString()));
+                logManager.writeLogEntry("Order " + task.getOrder().toString(),"PickingStation");
 
                 if (!task.isItemAvailable()) {
                     logger.appendLine(logFile, logger.line("PickingStation", "error",
                             "Item not available at shelf " + task.getShelfLocation()));
+                    logManager.writeLogEntry("ERROR: Item not available at shelf " + task.getShelfLocation(),"PickingStation");
                     throw new ItemNotFoundException("Item not available at shelf " + task.getShelfLocation());
                 }
 

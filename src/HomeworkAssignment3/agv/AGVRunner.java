@@ -51,6 +51,8 @@ public class AGVRunner extends Station<AgvTask> {
                 Path logPath = logFiles.pathFor("AGV", agvTask.getAgv().getId(), LocalDate.now());
                 logFiles.appendLine(logPath, logEntry);
 
+                logManager.writeLogEntry(logEntry,"AGVRunner");
+
                 Thread.sleep(2000); // Simulate transport
 
                 if (agvTask.getDestinationLocation().equals("packing-station")) {

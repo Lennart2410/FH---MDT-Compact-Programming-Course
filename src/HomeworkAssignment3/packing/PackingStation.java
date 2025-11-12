@@ -133,4 +133,8 @@ public class PackingStation extends Station<PackingTask> {
             pool.shutdownNow();
         }
     }
+
+    public PackingIO getPackingIo() {
+        return packingIo;
+    }
 }

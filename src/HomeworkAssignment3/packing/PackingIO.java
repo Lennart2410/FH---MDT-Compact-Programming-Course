@@ -1,6 +1,7 @@
 package HomeworkAssignment3.packing;
 
 
+import HomeworkAssignment3.logging.LogListener;
 import HomeworkAssignment3.packing.exceptions.PackingIoException;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -20,20 +22,35 @@ public class PackingIO {
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    private final List<LogListener> listeners = new ArrayList<>();
+
     public PackingIO(Path logsRoot) {
         this.base = logsRoot.resolve("PackingStation");
     }
+
     // PackingIO — add helpers
-    public Path getLabelPath(String orderNo)   { return base.resolve("labels").resolve(orderNo + ".txt"); }
-    public Path getLogPathFor(LocalDate d)     { return base.resolve(d.format(DAY) + ".log"); }
-    public Path getExportPath(String orderNo)  { return base.getParent().resolve("exports").resolve(orderNo + ".txt"); }
+    public Path getLabelPath(String orderNo) {
+        return base.resolve("labels").resolve(orderNo + ".txt");
+    }
+
+    public Path getLogPathFor(LocalDate d) {
+        return base.resolve(d.format(DAY) + ".log");
+    }
+
+    public Path getExportPath(String orderNo) {
+        return base.getParent().resolve("exports").resolve(orderNo + ".txt");
+    }
+
+    public void addListener(LogListener listener) {
+        listeners.add(listener);
+    }
 
     public void searchLogsByLabel(String orderNumber) throws PackingIoException {
         List<Path> labels = null;
         try {
-            labels = findByRegex("labels[/\\\\]"+orderNumber+"\\.txt$");
+            labels = findByRegex("labels[/\\\\]" + orderNumber + "\\.txt$");
         } catch (IOException e) {
-            throw new PackingIoException("Find label failed for order "+orderNumber, e); // chaining
+            throw new PackingIoException("Find label failed for order " + orderNumber, e); // chaining
         }
         //labels.forEach(System.out::println);
     }
@@ -43,14 +60,14 @@ public class PackingIO {
         try {
             hits = findByRegex(date + "\\.log$"); // match file ending with that date
         } catch (IOException e) {
-            throw new PackingIoException("Find logs by date failed for "+date, e);
+            throw new PackingIoException("Find logs by date failed for " + date, e);
         }
         //hits.forEach(System.out::println);
     }
 
     public Path exportPackingLog(String orderNumber) throws PackingIoException {
         Path label = base.resolve("labels").resolve(orderNumber + ".txt");     // source
-        Path dest  = base.getParent().resolve("exports").resolve(orderNumber + ".txt"); // logs/exports/...
+        Path dest = base.getParent().resolve("exports").resolve(orderNumber + ".txt"); // logs/exports/...
         try {
             Files.createDirectories(dest.getParent());
             // COPY instead of MOVE
@@ -61,16 +78,19 @@ public class PackingIO {
                     "Export failed: " + label + " → " + dest, e);
         }
     }
+
     public void logPacking(String orderNumber, String packerID, List<Parcel> parcels) throws PackingIoException {
         int count = parcels.size();
         double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
 
         try {
-            logEvent(packerID+ " Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
-            writeLabel(orderNumber,packerID, count, total);
+            logEvent(packerID + " Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
+            writeLabel(orderNumber, packerID, count, total);
         } catch (IOException e) {
-            throw new PackingIoException("Writing packing artifacts failed for "+orderNumber, e);        }
+            throw new PackingIoException("Writing packing artifacts failed for " + orderNumber, e);
+        }
     }
+
     /* -- daily packing log (character stream) ---- */
     public void logEvent(String msg) throws IOException {
         Files.createDirectories(base);
@@ -79,11 +99,12 @@ public class PackingIO {
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             w.write(TIME.format(LocalTime.now()) + ",PACK," + msg);
             w.newLine();
+            addLogInUi("PackingStation", "PACK: " + msg);
         }
     }
 
     /* ---- LABEL per order (character stream) ---- */
-    public void writeLabel(String orderNo,String packerID, int parcels, double totalKg) throws IOException {
+    public void writeLabel(String orderNo, String packerID, int parcels, double totalKg) throws IOException {
         Path dir = base.resolve("labels");
         Files.createDirectories(dir);
         Path txt = dir.resolve(orderNo + ".txt");
@@ -93,6 +114,11 @@ public class PackingIO {
             w.write("Order   : " + orderNo + "\n");
             w.write("Parcels : " + parcels + "\n");
             w.write(String.format("TotalKg : %.2f%n", totalKg));
+            addLogInUi("PackingStation", "=== PACKING LABEL ===");
+            addLogInUi("PackingStation", "Packer Machine : " + packerID);
+            addLogInUi("PackingStation", "Order   : " + orderNo);
+            addLogInUi("PackingStation", "Parcels : " + parcels);
+            addLogInUi("PackingStation", String.format("TotalKg : %.2f%n", totalKg));
         }
     }
 
@@ -123,6 +149,12 @@ public class PackingIO {
             zos.putNextEntry(new java.util.zip.ZipEntry(src.getFileName().toString()));
             Files.copy(src, zos);
             zos.closeEntry();
+        }
+    }
+
+    private void addLogInUi(String station, String textToLog) {
+        for (LogListener l : listeners) {
+            l.onLog(station, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + textToLog);
         }
     }
 }

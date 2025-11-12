@@ -23,7 +23,7 @@ public class WarehouseRunner {
 
             warehouse.getPickingStation().getLogManager().addListener(ui);
             warehouse.getAgvRunnerPickToPack().getLogManager().addListener(ui);
-            warehouse.getPackingStation().getLogManager().addListener(ui);
+            warehouse.getPackingStation().getPackingIo().addListener(ui);
             warehouse.getAgvRunnerPackToLoad().getLogManager().addListener(ui);
             warehouse.getLoadingStation().getLogManager().addListener(ui);
 

@@ -104,7 +104,6 @@ public class LogFiles {
 
     // Format a log line with timestamp, actor, event, and detail
     public String line(String actor, String event, String detail) {
-        addLogInUi(actor,detail);
         return String.format("%s,%s,%s,%s", TIME.format(LocalTime.now()), actor, event, detail);
     }
 

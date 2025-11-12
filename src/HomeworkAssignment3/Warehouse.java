@@ -37,12 +37,7 @@ public class Warehouse {
 
     public Warehouse() throws WarehouseException {
         storage.writeLogEntry("Hello World","Warehouse");
-        Item item1 = new Item("Phone");
-        Item item2 = new Item("Book");
-        Item item3 = new Item("Another Book");
-        Item item4 = new Item("Pen");
 
-        List<Item> itemList = List.of(item1, item2, item3, item4);
 
         ExecutorService exec = Executors.newFixedThreadPool(5);
         exec.submit(pickingStation);
