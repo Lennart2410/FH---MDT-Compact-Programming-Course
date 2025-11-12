@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class Order {
 
+    private static int orderCounter = 1;
 
     private final List<Item> items;
     private final String destination;
@@ -22,7 +23,7 @@ public class Order {
 
     public Order(String destination, List<Item> items) {
         this.orderStatusEnum = OrderStatusEnum.ORDERED;
-        this.orderNumber = "ORD-" + UUID.randomUUID();
+        this.orderNumber = "ORD-" + String.format("%05d", orderCounter++);
         this.destination = destination;
         this.items = items;
         this.totalWeight = 12;

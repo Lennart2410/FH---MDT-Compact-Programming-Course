@@ -44,7 +44,7 @@ public class LoadingStation extends Station<LoadingTask> {
 
         // Dock a vehicle into the docking-bay
         dockVehicleIntoBay(new Van(30.0, "Dortmund"));
-        dockVehicleIntoBay(new Truck(95.0, "Dortmund"));
+        dockVehicleIntoBay(new Truck(95.0, "Berlin"));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class LoadingStation extends Station<LoadingTask> {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             throw new WarehouseException("A generic error inside the warehouse occured.");
         } catch (NoDestinationException e) {
-            logManager.writeLogEntry("ERROR: " + e.getMessage() + " Put the Task into the queue once more.", loadingStationUrl);
+            logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
         } catch (LoadingException | DeliveryException e) {
             logManager.writeLogEntry("ERROR: " + e.getMessage(), loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
@@ -125,8 +125,9 @@ public class LoadingStation extends Station<LoadingTask> {
         logManager.writeLogEntry("Docking the delivery vehicle " + car.getId() + " was successfully.", loadingStationUrl);
     }
 
-    public void undockVehicleFromBay(Car car) {
-        loadingBayList.removeIf(loadingBay -> loadingBay.getOccupyingCar().getId().equals(car.getId()));
+    public void undockVehicleFromBay(Car car) throws NoBayException {
+        loadingBayList.stream().filter(loadingBay -> loadingBay.getOccupyingCar().getId().equals(car.getId())).findFirst().orElseThrow(()-> new NoBayException("Couldn't remove the vehicle from the bay.")).setOccupyingCar(null);
+        logManager.writeLogEntry("Undocked car with id " + id + " from the loading bays.", loadingStationUrl);
         car.setCurrentlyDelivering(true);
     }
 
@@ -159,7 +160,7 @@ public class LoadingStation extends Station<LoadingTask> {
                 }
             }
             //If Parcels are all loaded, stop outer loop
-            if(addedParcels.size() == parcelList.size()){
+            if (addedParcels.size() == parcelList.size()) {
                 break;
             }
         }
@@ -178,6 +179,7 @@ public class LoadingStation extends Station<LoadingTask> {
         Employee deliveryEmployee = employeeList.stream().filter(employee -> employee.getJobType().equals(JobType.DELIVERY)).findFirst().orElseThrow(() -> new NoDeliveryEmployeeException("There were no free employees who would could drive the delivery."));
 
         deliveryExecutor.submit(() -> {
+            try {
             undockVehicleFromBay(deliveryVehicleToStart);
             deliveryEmployee.setCurrentlyOccupied(true);
             logManager.writeLogEntry("Starting delivery with Id " + id + ".", loadingStationUrl);
@@ -187,9 +189,10 @@ public class LoadingStation extends Station<LoadingTask> {
             logManager.writeLogEntry("Completed the delivery for " + id + ".", loadingStationUrl);
             currentOrder.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
             System.out.println("A delivery for Id " + id + " is finished.");
-            try {
+
                 dockVehicleIntoBay(deliveryVehicleToStart);
             } catch (NoBayException e) {
+                logManager.writeLogEntry(e.getMessage(), loadingStationUrl);
                 currentOrder.setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
                 throw new RuntimeException(e);
             }
@@ -214,27 +217,14 @@ public class LoadingStation extends Station<LoadingTask> {
         return deliveryVehicles;
     }
 
-    public void setDeliveryVehicles(List<Car> deliveryVehicles) {
-        this.deliveryVehicles = deliveryVehicles;
-    }
 
     public List<Employee> getEmployeeList() {
         return employeeList;
     }
 
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
-    }
 
     public List<LoadingBay> getLoadingBayList() {
         return loadingBayList;
     }
 
-    public void setLoadingBayList(List<LoadingBay> loadingBayList) {
-        this.loadingBayList = loadingBayList;
-    }
-
-    public int getMaximumBayCapacity() {
-        return maximumBayCapacity;
-    }
 }
