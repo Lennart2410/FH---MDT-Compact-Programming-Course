@@ -14,7 +14,6 @@ import HomeworkAssignment3.packing.PackingTask;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -45,21 +44,24 @@ public class AGVRunner extends Station<AgvTask> {
                 agvTask.getAgv().setBusy(true);
                 System.out.println("AGVRunner is running a new task with " + agvTask.getAgv().getId());
 
-                String logEntry = String.format("AGV %s transporting from %s to %s",
-                        agvTask.getAgv().getId(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+                String logEntry = String.format("%s is transporting order %s from %s to %s",
+                        agvTask.getAgv().getId(), agvTask.getOrder().getOrderNumber(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
 
-                Path logPath = logFiles.pathFor("AGV", agvTask.getAgv().getId(), LocalDate.now());
-                logFiles.appendLine(logPath, logEntry);
-
-                logManager.writeLogEntry(logEntry,"AGVRunner");
+                logManager.writeLogEntry(logEntry, "AGVRunner");
 
                 Thread.sleep(2000); // Simulate transport
 
                 if (agvTask.getDestinationLocation().equals("packing-station")) {
                     System.out.println("AGV " + agvTask.getAgv().getId() + " finished transporting. Added a new packing task.");
+                    String logEntryNewPackingTask = String.format("%s finished transporting order %s from %s to %s. Creating a new Task for the packing station.",
+                            agvTask.getAgv().getId(), agvTask.getOrder().getOrderNumber(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+                    logManager.writeLogEntry(logEntryNewPackingTask, "AGVRunner");
                     addToQueue(new PackingTask(agvTask.getOrder()));
                 } else if (agvTask.getDestinationLocation().equals("loading-station")) {
                     System.out.println("AGV " + agvTask.getAgv().getId() + " finished transporting. Added a new loading task.");
+                    String logEntryNewLoadingTask = String.format("%s finished transporting order %s from %s to %s. Creating a new Task for the loading station.",
+                            agvTask.getAgv().getId(), agvTask.getOrder().getOrderNumber(), agvTask.getStartingLocation(), agvTask.getDestinationLocation());
+                    logManager.writeLogEntry(logEntryNewLoadingTask, "AGVRunner");
                     addToQueue(new LoadingTask(agvTask.getOrder()));
                 } else {
                     throw new NoDestinationException("Invalid destination: " + agvTask.getDestinationLocation());

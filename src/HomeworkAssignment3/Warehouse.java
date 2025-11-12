@@ -2,7 +2,6 @@ package HomeworkAssignment3;
 
 
 import HomeworkAssignment3.agv.AGVRunner;
-import HomeworkAssignment3.general.Item;
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.Task;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
@@ -13,8 +12,6 @@ import HomeworkAssignment3.picking.PickingStation;
 import HomeworkAssignment3.picking.PickingTask;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -32,11 +29,10 @@ public class Warehouse {
     PackingStation packingStation = new PackingStation(ingoingQueuePacking, ingoingQueueAGVPackToLoad);
     AGVRunner agvRunnerPackToLoad = new AGVRunner(Path.of("logs"),ingoingQueueAGVPackToLoad,ingoingQueueLoading);
     LoadingStation loadingStation = new LoadingStation(2, ingoingQueueLoading, null);
-    Path logsRoot = Paths.get("logs");
-    LogFiles storage = new LogFiles(logsRoot);
+
+    LogFiles storage = new LogFiles();
 
     public Warehouse() throws WarehouseException {
-        storage.writeLogEntry("Hello World","Warehouse");
 
 
         ExecutorService exec = Executors.newFixedThreadPool(5);
@@ -45,7 +41,8 @@ public class Warehouse {
         exec.submit(packingStation);
         exec.submit(agvRunnerPackToLoad);
         exec.submit(loadingStation);
-        System.out.println("Warehouse systems starts");
+
+        storage.writeLogEntry("Hello World","Warehouse");
         //processOrder(new Order("Example Street 1", itemList));
     }
 

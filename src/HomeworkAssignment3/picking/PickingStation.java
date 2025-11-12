@@ -11,9 +11,7 @@ import HomeworkAssignment3.logging.LogFiles;
 import HomeworkAssignment3.picking.exceptions.ItemNotFoundException;
 import HomeworkAssignment3.picking.exceptions.PickingException;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -24,8 +22,6 @@ import java.util.concurrent.BlockingQueue;
  * such as unavailable items using custom exceptions.
  */
 public class PickingStation extends Station<PickingTask> {
-
-    private final LogFiles logger = new LogFiles(Path.of("logs"));
 
     // List of available pickers
     private final List<Employee> pickers = new ArrayList<>();
@@ -43,43 +39,36 @@ public class PickingStation extends Station<PickingTask> {
         System.out.println("PickingStation received a task.");
         new Thread(() -> {
             try {
+                logManager.writeLogEntry("New Task was received by the picking station. Task will be done by picker " + task.getPicker().getName(), "PickingStation");
                 task.getPicker().setCurrentlyOccupied(true);
-                Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
-                logger.appendLine(logFile, logger.line("PickingStation", "started",
-                        "Order " + task.getOrder().toString()));
-                logManager.writeLogEntry("Order " + task.getOrder().toString(),"PickingStation");
+
+                logManager.writeLogEntry("Started picking of order " + task.getOrder().getOrderNumber(), "PickingStation");
 
                 if (!task.isItemAvailable()) {
-                    logger.appendLine(logFile, logger.line("PickingStation", "error",
-                            "Item not available at shelf " + task.getShelfLocation()));
-                    logManager.writeLogEntry("ERROR: Item not available at shelf " + task.getShelfLocation(),"PickingStation");
+
+                    logManager.writeLogEntry("ERROR: Item not available at shelf " + task.getShelfLocation(), "PickingStation");
                     throw new ItemNotFoundException("Item not available at shelf " + task.getShelfLocation());
                 }
 
                 Thread.sleep(15000); // Simulate picking time
 
-                logger.appendLine(logFile, logger.line("PickingStation", "finished",
-                        "Picked by " + task.getPicker().getName()));
+
+                logManager.writeLogEntry("Finished picking order by " + task.getPicker().getName(), "PickingStation");
 
                 task.getOrder().setOrderStatusEnum(OrderStatusEnum.PICKED);
                 System.out.println("PickingStation finished picking. Putting task into AGV queue.");
                 addToQueue(new AgvTask(task.getOrder(), "shelves", "packing-station"));
 
             } catch (PickingException e) {
-                try {
-                    Path logFile = logger.pathFor("PickingStation", null, LocalDate.now());
-                    logger.appendLine(logFile, logger.line("PickingStation", "finished",
-                            "Picked by " + task.getPicker().getName()));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                logManager.writeLogEntry("ERROR: There waw a problem at picking items.", "PickingStation");
                 throw new RuntimeException("Picking failed: " + e.getMessage(), e);
 
             } catch (Exception e) {
+                logManager.writeLogEntry("ERROR: There waw a problem at picking items.", "PickingStation");
                 throw new RuntimeException("Unexpected error in PickingStation", e);
 
-            }
-            finally {
+            } finally {
+                logManager.writeLogEntry("Task was finished. Picker " + task.getPicker().getName() + " is available again.", "PickingStation");
                 task.getPicker().setCurrentlyOccupied(false);
             }
         }).start();
@@ -101,6 +90,7 @@ public class PickingStation extends Station<PickingTask> {
                     // when the process / thread is finished, set the picker to unassigned.
                 } else {
                     System.out.println("No available picker. Task will wait.");
+                    logManager.writeLogEntry("WARN: No picker employee was available. Task will wait for availability.", "PickingStation");
                 }
             }
         } catch (InterruptedException stop) {
