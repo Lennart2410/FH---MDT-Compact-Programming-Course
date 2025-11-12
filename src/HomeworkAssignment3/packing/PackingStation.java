@@ -45,7 +45,6 @@ public class PackingStation extends Station<PackingTask> {
     @Override
     public void process(PackingTask packingTask) throws WarehouseException {
         System.out.println("PackingStation starts packing order "+packingTask.getOrder().getOrderNumber()+ " with Packer Machine " + packingTask.getPackerID());
-        packingIo.addLogInUi("PackingStation", "PackingStation starts packing with Packer Machine " + packingTask.getPackerID());
         final List<Parcel> parcels;
         try {
             parcels = packingTask.getBoxing().cartonize();
@@ -89,9 +88,8 @@ public class PackingStation extends Station<PackingTask> {
      */
     @Override
     public void run() {
-        // Start one thread per worker
         pool = java.util.concurrent.Executors.newFixedThreadPool(workers.size());
-
+        // Start one thread per worker
         for (PackingWorker w : workers) {
             pool.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
@@ -100,11 +98,13 @@ public class PackingStation extends Station<PackingTask> {
                         PackingTask task = (PackingTask) in.take();
 
                         // 2) annotate with this worker id and simulate speed
+                        packingIo.addLogInUi("PackingStation", "New Task is received, searching for available packing machine");
                         task.setPackerID(w.getWorkerId());
+                        packingIo.addLogInUi("PackingStation", "Packer Machine " + task.getPackerID() + " starts packing order " + task.getOrder().getOrderNumber());
                         Thread.sleep((long)(w.getBaseMs() * w.getSpeedFactor()));
 
                         // 3) do the real work (synchronous)
-                        process(task); // throws WarehouseException → let it bubble/log below
+                        process(task);
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                         break;
