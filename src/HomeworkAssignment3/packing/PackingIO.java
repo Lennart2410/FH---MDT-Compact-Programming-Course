@@ -84,7 +84,7 @@ public class PackingIO {
         double total = parcels.stream().mapToDouble(Parcel::getWeightKg).sum();
 
         try {
-            logEvent(packerID + " Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
+            logEvent(" Packer Machine : " + packerID + " Cartonized " + orderNumber + " parcels=" + count + " totalKg=" + String.format("%.2f", total));
             writeLabel(orderNumber, packerID, count, total);
         } catch (IOException e) {
             throw new PackingIoException("Writing packing artifacts failed for " + orderNumber, e);
@@ -97,9 +97,8 @@ public class PackingIO {
         Path file = base.resolve(LocalDate.now().format(DAY) + ".log");
         try (var w = Files.newBufferedWriter(file, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
-            w.write(TIME.format(LocalTime.now()) + ",PACK," + msg);
+            w.write(TIME.format(LocalTime.now()) + msg);
             w.newLine();
-            addLogInUi("PackingStation", "PACK: " + msg);
         }
     }
 
@@ -118,7 +117,7 @@ public class PackingIO {
             addLogInUi("PackingStation", "Packer Machine : " + packerID);
             addLogInUi("PackingStation", "Order   : " + orderNo);
             addLogInUi("PackingStation", "Parcels : " + parcels);
-            addLogInUi("PackingStation", String.format("TotalKg : %.2f%n", totalKg));
+            addLogInUi("PackingStation", String.format("TotalKg : %.2f", totalKg));
         }
     }
 
@@ -152,7 +151,7 @@ public class PackingIO {
         }
     }
 
-    private void addLogInUi(String station, String textToLog) {
+    public void addLogInUi(String station, String textToLog) {
         for (LogListener l : listeners) {
             l.onLog(station, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + textToLog);
         }

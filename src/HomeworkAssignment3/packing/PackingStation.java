@@ -28,9 +28,9 @@ public class PackingStation extends Station<PackingTask> {
         logsRoot = Paths.get("logs");
         packingIo = new PackingIO(logsRoot);
         //  3 packers with different speeds (1.0 = normal, 0.7 = faster)
-        workers.add(new PackingWorker("M-1", 200, 1.0));
-        workers.add(new PackingWorker("M-2", 200, 0.7));
-        workers.add(new PackingWorker("M-3", 200, 0.7));
+        workers.add(new PackingWorker("M-1", 10000, 1.0));
+        workers.add(new PackingWorker("M-2", 10000, 0.7));
+        workers.add(new PackingWorker("M-3", 10000, 0.7));
     }
 
     /** Extra constructor for tests (inject temp logs and/or custom IO). */
@@ -38,52 +38,49 @@ public class PackingStation extends Station<PackingTask> {
         super(in, out);
         this.logsRoot = logsRoot;
         this.packingIo = packingIo;
-        // keep at least one worker so tests work out of the box
+        // keep one worker so tests work out of the box
         workers.add(new PackingWorker("M-1", 200, 1.0));
     }
-    /** Synchronous processing of one PackingTask (no new Thread here). */
+    /** Synchronous processing of one PackingTask */
     @Override
     public void process(PackingTask packingTask) throws WarehouseException {
-        new Thread(() -> {
-        System.out.println("PackingStation starts packing with packer " +packingTask.getPackerID());
-            try {
-
+        System.out.println("PackingStation starts packing order "+packingTask.getOrder().getOrderNumber()+ " with Packer Machine " + packingTask.getPackerID());
+        packingIo.addLogInUi("PackingStation", "PackingStation starts packing with Packer Machine " + packingTask.getPackerID());
         final List<Parcel> parcels;
         try {
-            Thread.sleep(10000);
             parcels = packingTask.getBoxing().cartonize();
-            // Update order state
-            packingTask.getOrder().setOrderParcels(parcels);
-            packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
-            LogPackingTask(packingTask, parcels);
-            System.out.println("PackingStation is finished packing into parcels. Putting task into agv queue.");
-            addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station"));
-
-        } catch (RuntimeException ex) {    // Boxing: if service fails, rethrow with context
+        } catch (RuntimeException ex) {
+            // domain wrap with context
             throw new BoxingFailureException("Cartonization failed for " +
                     packingTask.getOrder().getOrderNumber(), ex);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-            } catch (PackingIoException | IllegalStateException e) { // multiple exceptions
-                try {
-                    throw new WarehouseException(
-                            "I/O sequence failed at packing stage for " +
-                                    packingTask.getOrder().getOrderNumber(), e);
-                } catch (WarehouseException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } catch (PackingException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
+
+        // update order
+        packingTask.getOrder().setOrderParcels(parcels);
+        packingTask.getOrder().setOrderStatusEnum(OrderStatusEnum.PACKAGING);
+
+        // I/O sequence: multi-catch -> rethrow as WarehouseException with cause (chaining)
+        try {
+            LogPackingTask(packingTask, parcels);
+        } catch (PackingIoException | IllegalStateException e) {
+            throw new WarehouseException(
+                    "I/O sequence failed at packing stage for " +
+                            packingTask.getOrder().getOrderNumber(), e);
+        } catch (PackingException e) {
+            throw e; // already a domain exception
+        }
+
+        // handoff to AGV (Pack -> Load)
+        packingIo.addLogInUi("PackingStation", "PackingStation finished packing. Task enqueued for AGV.");
+        addToQueue(new AgvTask(packingTask.getOrder(), "packing-station", "loading-station"));
+        System.out.println("PackingStation finished packing. Task enqueued for AGV.");
     }
 
     private void LogPackingTask(PackingTask packingTask, List<Parcel> parcels) throws PackingException {
         packingIo.logPacking(packingTask.getOrder().getOrderNumber(),packingTask.getPackerID(), parcels);
-        packingIo.searchLogsByDate(java.time.LocalDate.now().toString());
-        packingIo.searchLogsByLabel(packingTask.getOrder().getOrderNumber());
-        packingIo.exportPackingLog(packingTask.getOrder().getOrderNumber());
+//        packingIo.searchLogsByDate(java.time.LocalDate.now().toString());
+//        packingIo.searchLogsByLabel(packingTask.getOrder().getOrderNumber());
+//        packingIo.exportPackingLog(packingTask.getOrder().getOrderNumber());
     }
     /**
      * Starts a fixed-size pool: one thread per packer.
