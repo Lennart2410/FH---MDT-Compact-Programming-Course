@@ -61,7 +61,7 @@ care of delivering the loaded parcels to the customer.
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
 
-Answers to the questions regarding the Home Assignment 3 can be found under [src/HomeworkAssignment3/home-assignment3-answers.md](src/HomeworkAssignment3/homework-assigment3-answers.md)
+Answers to the questions regarding the Home Assignment 3 can be found under [src/CapstoneProject/home-assignment3-answers.md](src/HomeworkAssignment3/homework-assigment3-answers.md)
 
 ### Capstone project
 

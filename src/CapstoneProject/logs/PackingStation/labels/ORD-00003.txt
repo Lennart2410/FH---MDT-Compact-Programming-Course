@@ -1,0 +1,5 @@
+=== PACKING LABEL ===
+Packer Machine : M-3
+Order   : ORD-00003
+Parcels : 1
+TotalKg : 12,30

@@ -1,0 +1,4 @@
+=== PACKING LABEL ===
+Order   : ORD00a2f90db3-b1f3-4e1f-b441-b3df371b52a9
+Parcels : 1
+TotalKg : 12,30

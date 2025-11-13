@@ -1,0 +1,5 @@
+=== PACKING LABEL ===
+Packer Machine : M-1
+Order   : ORD00b805e798-d482-484e-8044-8f2469ef3570
+Parcels : 1
+TotalKg : 12,30
