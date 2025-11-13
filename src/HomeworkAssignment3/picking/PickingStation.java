@@ -33,6 +33,7 @@ public class PickingStation extends Station<PickingTask> {
         System.out.println("PickingStation received a task.");
         new Thread(() -> {
             try {
+                logManager.writeLogEntry("A LoadingTask with the order number " + task.getOrder().getOrderNumber() + " should be processed.", "Warehouse");
                 logManager.writeLogEntry("New Task was received by the picking station. Task will be done by picker " + task.getPicker().getName(), "PickingStation");
                 task.getPicker().setCurrentlyOccupied(true);
 

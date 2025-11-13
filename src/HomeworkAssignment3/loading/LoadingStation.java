@@ -80,7 +80,7 @@ public class LoadingStation extends Station<LoadingTask> {
             getListener().onOrderStatusChanged(currentOrder);
 
             System.out.println("LoadingStation finished loading. Parcel is ready for delivery.");
-            logManager.writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed and is ready for delivery.", warehouseUrl);
+            logManager.writeLogEntry("A LoadingTask with the order number " + loadingTask.getOrder().getOrderNumber() + " was processed and is ready for delivery.", loadingStationUrl);
 
             if (isDeliveryReadyToStart(carIdToStart)) {
                 System.out.println("A delivery for Id " + carIdToStart + " is going to start.");
@@ -114,7 +114,7 @@ public class LoadingStation extends Station<LoadingTask> {
             getListener().onOrderStatusChanged(currentOrder);
             throw new WarehouseException("A Generic error inside the warehouse occured.");
         }
-        logManager.writeLogEntry("Loading station task is complete.", warehouseUrl);
+        logManager.writeLogEntry("Loading station task is complete.", loadingStationUrl);
         // No putting into queues here, because order is finished
     }
 

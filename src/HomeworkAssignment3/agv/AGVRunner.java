@@ -43,6 +43,7 @@ public class AGVRunner extends Station<AgvTask> {
     public void process(AgvTask agvTask) throws WarehouseException {
         new Thread(() -> {
             try {
+                logManager.writeLogEntry("A AGVTask with the order number " + agvTask.getOrder().getOrderNumber() + " should be processed.", "Warehouse");
                 agvTask.getAgv().setBusy(true);
                 System.out.println("AGVRunner is running a new task with " + agvTask.getAgv().getId());
 

@@ -9,6 +9,8 @@ import HomeworkAssignment3.logging.LogListener;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -148,7 +150,7 @@ public class WarehouseSystemUI extends JFrame implements LogListener, OrderStatu
                 throw new RuntimeException(ex);
             }
 
-            appendToLog(4, "New order created for address: " + address + " with " + items.size() + " items.");
+            appendToLog(4, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + "New order created for address: " + address + " with " + items.size() + " items.");
 
             // Track and display orde
 
