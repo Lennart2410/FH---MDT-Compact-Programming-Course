@@ -2,6 +2,10 @@
 
 Group work assignments for the Java Compact Programming Course
 
+For starting the project the start of the main method inside the WarehouseRunner.class is needed.
+
+[Open WarehouseRunner.java](src/CapstoneProject/WarehouseRunner.java)
+
 ### Project Requirements - Amazon Fulfillment Center
 
 The Homework Assignments and Capstone Project have a shared project idea. The project is the Amazon Fulfillment center,
@@ -37,31 +41,16 @@ care of delivering the loaded parcels to the customer.
 
 ### Project diagrams
 
-![UML class diagram Capstone](./src/CapstoneProject/diagrams/classdiagramv2.png)
-![UML sequence diagram Capstone](./src/CapstoneProject/diagrams/sequence-diagramv2.png)
+![UML class diagram Capstone](./src/CapstoneProject/diagrams/classdiagramm_warehouse.png)
 
-### Homework assignment 1
+![UML sequence diagram Capstone](./src/CapstoneProject/diagrams/sequence-logfiles.png)
 
-    - Lennart Ziehm 7201519: LoadingStation and related classes
-    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
-    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
-    - Marianne Nosseir 7224660: PackingStation and related classes
 
-### Homework assignment 2
+### Running the tests
 
-    - Lennart Ziehm 7201519: LoadingStation and related classes
-    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
-    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
-    - Marianne Nosseir 7224660: PackingStation and related classes
+Tests were written with JUnit 5.8.1. This has to be added to the classpath in order to run the tests.
 
-### Homework assignment 3
 
-    - Lennart Ziehm 7201519: LoadingStation and related classes & AGV energy loading
-    - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
-    - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
-    - Marianne Nosseir 7224660: PackingStation and related classes
-
-Answers to the questions regarding the Home Assignment 3 can be found under [src/CapstoneProject/home-assignment3-answers.md](src/HomeworkAssignment3/homework-assigment3-answers.md)
 
 ### Capstone project
 
@@ -69,40 +58,3 @@ Answers to the questions regarding the Home Assignment 3 can be found under [src
     - Yasaman OladzadAbasabadi 7223229: PickingStation and related classes
     - Niloufar OladzadAbasabadi 7223228: AGVRunner and related classes
     - Marianne Nosseir 7224660: PackingStation and related classes
-
----
-
-## Preparing tasks
-
-### Self assignment 1
-
-    - Problem 1: Yasaman OladzadAbasabadi 7223229
-    - Problem 2: Lennart Ziehm 7201519
-    - Problem 3: Niloufar OladzadAbasabadi 7223228
-    - Problem 4: Lennart Ziehm 7201519
-
-### Self assignment 2
-
-    - Class implementation part 1: Marianne Nosseir 7224660
-        - Implementation of IndustrialProcess & SingleOperation classes and IOperation interface
-    - Class implementation part 2: Lennart Ziehm 7201519
-        - Implementation of AGV and Position classes
-    - Self designed analysis task 1: Yasaman OladzadAbasabadi 7223229
-        - Analysis of SingleOperation & IndustrialProcess classes. 
-            - Calculation of the average nominalTimeMinutes of all Operations
-            - Calculation of the fastest and the slowest Operation
-            - Printing a sorted list in the order of finish time of each SingleOperation
-    - Self designed analysis task 2: Niloufar OladzadAbasabadi 7223228
-        - Analysis of the AGV class. Test for checking:
-            - if any AGV has less than 20 percent of battery left
-            - if any AGV is used multiple time for different operations
-            - which AGV is the fastest overall
-
-### Self assignment 3
-
-    - Lennart Ziehm 7201519: Implementation of HardwareResources, NonHumanResources, Resource + UML-Diagram
-    - Yasaman OladzadAbasabadi 7223229: Implementation of TransportOperation, HumanOperation and reworking IOperation
-    - Niloufar OladzadAbasabadi 7223228: Implementation of HumanResources, MaterialResources and SoftwareResources
-    - Marianne Nosseir 7224660: Implementation of Process, ManagementProcess and IndustrialProcess
-
-
