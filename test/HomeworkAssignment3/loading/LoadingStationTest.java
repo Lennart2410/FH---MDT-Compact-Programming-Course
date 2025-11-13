@@ -35,13 +35,17 @@ public class LoadingStationTest {
         van01 = new Van(33.0,"Berlin");
         employee01 = new Employee("Lennart Ziehm", 27, JobType.DELIVERY);
         employee02 = new Employee("Lennart Ziehm", 27, JobType.LOADER);
-        loadingStation = new LoadingStation(1, ingoingQueue, outgoingQueue);
+        loadingStation = new LoadingStation(2, ingoingQueue, outgoingQueue, null);
+        loadingStation.getLoadingBayList().clear();
+        loadingStation.getDeliveryVehicles().clear();
+        loadingStation.getEmployeeList().clear();
     }
 
     // Test 1 Dock Vehicle into Bay
     @Test
     public void dockVehicleIntoBayTest() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
+        loadingStation.getLoadingBayList().add(new LoadingBay());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
@@ -53,6 +57,7 @@ public class LoadingStationTest {
     @Test
     public void dockVehicleIntoBayTest_NoMoreBayException() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
+        loadingStation.getLoadingBayList().add(new LoadingBay());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
@@ -64,6 +69,7 @@ public class LoadingStationTest {
     @Test
     public void startDeliveryById() throws NoBayException, DeliveryNotFoundException, NoDeliveryEmployeeException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
+        loadingStation.getLoadingBayList().add(new LoadingBay());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
@@ -81,6 +87,7 @@ public class LoadingStationTest {
     @Test
     public void startDeliveryById_DeliveryNotFoundException() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
+        loadingStation.getLoadingBayList().add(new LoadingBay());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
@@ -98,6 +105,7 @@ public class LoadingStationTest {
     @Test
     public void startDeliveryById_NoDeliveryEmployeeException() throws NoBayException {
         Assertions.assertTrue(loadingStation.getDeliveryVehicles().isEmpty());
+        loadingStation.getLoadingBayList().add(new LoadingBay());
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());
         loadingStation.dockVehicleIntoBay(truck01);
         Assertions.assertEquals(1, loadingStation.getLoadingBayList().size());

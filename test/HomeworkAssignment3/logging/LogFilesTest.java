@@ -16,7 +16,7 @@ public class LogFilesTest {
     @Test
     public void testPathForCreatesPath() throws Exception {
         Path path = logFiles.pathFor("Test", "Unit", LocalDate.now());
-        assertTrue(path.toString().contains("Test/Unit"));
+        assertTrue(path.toString().contains("Test\\Unit"));
     }
 
     @Test

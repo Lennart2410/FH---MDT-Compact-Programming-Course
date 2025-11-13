@@ -2,6 +2,7 @@ package HomeworkAssignment3;
 
 import HomeworkAssignment3.general.Item;
 import HomeworkAssignment3.general.Order;
+import HomeworkAssignment3.general.OrderStatusListener;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.logging.LogListener;
 
@@ -12,7 +13,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WarehouseSystemUI extends JFrame implements LogListener {
+public class WarehouseSystemUI extends JFrame implements LogListener, OrderStatusListener {
     private JTextArea[] stationLogs = new JTextArea[5];
     private JComboBox<String> itemSelector;
     private JComboBox<String> addressSelector;
@@ -149,11 +150,7 @@ public class WarehouseSystemUI extends JFrame implements LogListener {
 
             appendToLog(4, "New order created for address: " + address + " with " + items.size() + " items.");
 
-            // Track and display order
-            activeOrders.put(order.getOrderNumber(), order);
-            int index = createdOrdersModel.size();
-            orderIndexMap.put(order.getOrderNumber(), index);
-            createdOrdersModel.addElement(formatOrderText(order));
+            // Track and display orde
 
             // Reset UI
             itemListModel.clear();
@@ -176,11 +173,11 @@ public class WarehouseSystemUI extends JFrame implements LogListener {
         return "Order #" + order.getOrderNumber() + " - Status: " + order.getOrderStatusEnum().toString();
     }
 
-    private void updateOrderDisplay(UUID orderId) {
-        Order order = activeOrders.get(orderId);
+    private void updateOrderDisplay(String getOrderNumber) {
+        Order order = activeOrders.get(getOrderNumber);
         if (order == null) return;
 
-        Integer index = orderIndexMap.get(orderId);
+        Integer index = orderIndexMap.get(getOrderNumber);
         if (index != null && index < createdOrdersModel.size()) {
             createdOrdersModel.set(index, formatOrderText(order));
         }
@@ -200,7 +197,25 @@ public class WarehouseSystemUI extends JFrame implements LogListener {
     public Warehouse startup() throws WarehouseException {
         SwingUtilities.invokeLater(() -> this.setVisible(true));
         warehouse = new Warehouse();
+
+        warehouse.addOrderStatusListener(this);
         return warehouse;
+    }
+
+    @Override
+    public void onOrderStatusChanged(Order order) {
+        SwingUtilities.invokeLater(() -> {
+            // Track and show the order if it’s new
+            if (!activeOrders.containsKey(order.getOrderNumber())) {
+                activeOrders.put(order.getOrderNumber(), order);
+                int index = createdOrdersModel.size();
+                orderIndexMap.put(order.getOrderNumber(), index);
+                createdOrdersModel.addElement(formatOrderText(order));
+            } else {
+                // Update existing one
+                updateOrderDisplay(order.getOrderNumber());
+            }
+        });
     }
 
     // --- LogListener implementation ---
@@ -211,10 +226,9 @@ public class WarehouseSystemUI extends JFrame implements LogListener {
             if (message.contains("Order") && message.contains("Status:")) {
                 // Example log message: "Order 12345 Status: COMPLETED"
                 try {
-                    String idPart = message.substring(message.indexOf("Order") + 6, message.indexOf("Status:")).trim();
-                    UUID orderId = UUID.fromString(idPart);
-                    Order order = activeOrders.get(orderId);
-                    if (order != null) updateOrderDisplay(orderId);
+                    String getOrderNumber = message.substring(message.indexOf("Order") + 6, message.indexOf("Status:")).trim();
+                    Order order = activeOrders.get(getOrderNumber);
+                    if (order != null) updateOrderDisplay(getOrderNumber);
                 } catch (Exception ignored) {}
             }
 

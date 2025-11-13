@@ -2,11 +2,12 @@ package HomeworkAssignment3.general;
 
 import HomeworkAssignment3.packing.Parcel;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public class Order {
+public class Order implements Serializable {
 
     private static int orderCounter = 1;
 

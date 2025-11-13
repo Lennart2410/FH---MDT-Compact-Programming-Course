@@ -16,13 +16,14 @@ public abstract class Station<T extends Task> implements IStation, Runnable {
     protected final LogFiles logManager;
     protected final BlockingQueue<Task> in;        // input queue (inbox)
     protected final BlockingQueue<Task> out;
+    private final OrderStatusListener listener;
 
-
-    public Station(BlockingQueue<Task> in, BlockingQueue<Task> out) {
+    public Station(BlockingQueue<Task> in, BlockingQueue<Task> out, OrderStatusListener listener) {
         logManager = new LogFiles();
         this.id = UUID.randomUUID().toString();
         this.in = in;
         this.out = out;
+        this.listener = listener;
     }
 
 
@@ -50,5 +51,9 @@ public abstract class Station<T extends Task> implements IStation, Runnable {
 
     public LogFiles getLogManager() {
         return logManager;
+    }
+
+    public OrderStatusListener getListener() {
+        return listener;
     }
 }

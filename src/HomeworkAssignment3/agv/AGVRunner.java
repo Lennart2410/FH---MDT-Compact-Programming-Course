@@ -17,14 +17,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AGVRunner extends Station<AgvTask> {
     private final LogFiles logFiles;
     private final List<AGV> agvFleet = new ArrayList<>();
     private final AGVEnergyStation agvEnergyStation = new AGVEnergyStation();
 
-    public AGVRunner(Path logBaseDir, BlockingQueue<Task> in, BlockingQueue<Task> out) throws AGVException {
-        super(in, out);
+    public AGVRunner(Path logBaseDir, BlockingQueue<Task> in, BlockingQueue<Task> out, OrderStatusListener listener) throws AGVException {
+        super(in, out, listener);
         this.logFiles = new LogFiles(logBaseDir);
         agvFleet.add(new AGV("AGV1"));
         agvFleet.add(new AGV("AGV2"));
@@ -64,6 +66,8 @@ public class AGVRunner extends Station<AgvTask> {
                     logManager.writeLogEntry(logEntryNewLoadingTask, "AGVRunner");
                     addToQueue(new LoadingTask(agvTask.getOrder()));
                 } else {
+                    agvTask.getOrder().setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
+                    getListener().onOrderStatusChanged(agvTask.getOrder());
                     throw new NoDestinationException("Invalid destination: " + agvTask.getDestinationLocation());
                 }
 

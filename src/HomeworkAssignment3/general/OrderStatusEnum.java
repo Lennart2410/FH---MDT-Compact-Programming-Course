@@ -6,6 +6,7 @@ public enum OrderStatusEnum {
     PACKAGING,
     LOADING,
     LOADED,
+    DELIVERING,
     DELIVERED,
     EXCEPTION
 }

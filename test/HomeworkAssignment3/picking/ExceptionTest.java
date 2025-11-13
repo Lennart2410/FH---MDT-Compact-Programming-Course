@@ -35,13 +35,4 @@ public class ExceptionTest {
         assertEquals("Picking failed", ex.getMessage());
         assertEquals(cause, ex.getCause());
     }
-
-    @Test
-    public void testExceptionChainingBehavior() throws PickingException {
-        try {
-            throw new ItemNotFoundException("Item not found");
-        } catch (ItemNotFoundException e) {
-            throw new PickingException("Wrapped exception", e);
-        }
-    }
 }

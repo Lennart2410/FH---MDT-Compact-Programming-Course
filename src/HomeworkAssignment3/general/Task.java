@@ -1,13 +1,14 @@
 package HomeworkAssignment3.general;
 
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Immutable message that moves between stations via queues.
  */
 
-public abstract class Task {
+public abstract class Task implements Serializable {
     private final String id;
     private final Order order;
 
@@ -18,6 +19,11 @@ public abstract class Task {
      */
     public Task(Order order) {
         this.id = "TSK00"+ UUID.randomUUID();
+        this.order = order;
+    }
+
+    public Task(Order order, String id) {
+        this.id = id;
         this.order = order;
     }
 

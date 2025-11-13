@@ -34,7 +34,7 @@ public class PackingTest {
         temp = Files.createTempDirectory("pack-logs-");
         io = new PackingIO(temp); // logs root = temp
 
-        station = new PackingStation(temp, io, ingoingQueue, outgoingQueue);
+        station = new PackingStation(temp, io, ingoingQueue, outgoingQueue,null);
     }
 
     @AfterEach
@@ -144,7 +144,7 @@ public class PackingTest {
             }
         };
 
-        PackingStation station = new PackingStation(temp, ioFailingLabel, ingoingQueue, outgoingQueue);
+        PackingStation station = new PackingStation(temp, ioFailingLabel, ingoingQueue, outgoingQueue, null);
 
         WarehouseException ex = assertThrows(WarehouseException.class, () -> station.process(task));
         // High-signal assertions (message + exception chain)
@@ -162,7 +162,7 @@ public class PackingTest {
         BoxingService ok = () -> List.of(new Parcel("P-" + order.getOrderNumber(), "S", 1.0));
         PackingTask task = new PackingTask(order);
         task.setPackerID("M-1");
-        PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue);
+        PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue, null);
         station.process(task);
 
         Path label = temp.resolve("PackingStation")

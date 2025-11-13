@@ -16,7 +16,7 @@ public class AGVEnergyLoadingStationTest {
 
     @BeforeEach
     public void setUp() throws AGVException {
-        agvRunner = new AGVRunner(null, null, null);
+        agvRunner = new AGVRunner(null, null, null, null);
         agvRunner.getAgvEnergyStation().addLoadingSlot(new LoadingSlot());
         agv01 = new AGV("agv01");
         agv02 = new AGV("agv02");

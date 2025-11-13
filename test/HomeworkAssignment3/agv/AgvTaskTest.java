@@ -35,6 +35,7 @@ public class AgvTaskTest {
     @Test
     public void testGetAgvId() {
         AgvTask task = new AgvTask(sampleOrder, "Start", "End");
+        task.setAgv(new AGV("AGV-99"));
         assertEquals("AGV-99", task.getAgv().getId());
     }
 

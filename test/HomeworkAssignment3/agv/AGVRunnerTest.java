@@ -3,7 +3,9 @@ package HomeworkAssignment3.agv;
 
 import HomeworkAssignment3.agv.exceptions.AGVException;
 import HomeworkAssignment3.general.*;
+import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.loading.LoadingStation;
+import HomeworkAssignment3.loading.exceptions.NoDestinationException;
 import HomeworkAssignment3.loading.vehicles.Truck;
 import HomeworkAssignment3.loading.vehicles.Van;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,7 @@ public class AGVRunnerTest {
         ingoingQueue = new ArrayBlockingQueue<>(1);
         outgoingQueue = new ArrayBlockingQueue<>(1);
 
-        runner = new AGVRunner(Path.of("logs"), ingoingQueue, outgoingQueue);
+        runner = new AGVRunner(Path.of("logs"), ingoingQueue, outgoingQueue, null);
         order = new Order("Test", List.of(new Item("Book")));
     }
 
@@ -57,10 +59,12 @@ public class AGVRunnerTest {
     }
 
     @Test
-    public void testProcessHandlesInterruptedException() {
-        Thread.currentThread().interrupt(); // Simulate interruption
+    public void testProcessOrderStatusException() throws WarehouseException, InterruptedException {
         AgvTask task = new AgvTask(order, "A", "B");
-        assertThrows(RuntimeException.class, () -> runner.process(task));
+        task.setAgv(new AGV("AGV01"));
+        runner.process(task);
+        Thread.sleep(2500);
+        assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.EXCEPTION);
     }
 
 }

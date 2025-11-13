@@ -1,17 +1,11 @@
 package HomeworkAssignment3.picking;
 
 import HomeworkAssignment3.agv.AgvTask;
-import HomeworkAssignment3.general.Employee;
-import HomeworkAssignment3.general.JobType;
-import HomeworkAssignment3.general.OrderStatusEnum;
-import HomeworkAssignment3.general.Station;
-import HomeworkAssignment3.general.Task;
+import HomeworkAssignment3.general.*;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
-import HomeworkAssignment3.logging.LogFiles;
 import HomeworkAssignment3.picking.exceptions.ItemNotFoundException;
 import HomeworkAssignment3.picking.exceptions.PickingException;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -27,8 +21,8 @@ public class PickingStation extends Station<PickingTask> {
     private final List<Employee> pickers = new ArrayList<>();
 
 
-    public PickingStation(BlockingQueue<Task> in, BlockingQueue<Task> out) {
-        super(in, out);
+    public PickingStation(BlockingQueue<Task> in, BlockingQueue<Task> out, OrderStatusListener listener) {
+        super(in, out,listener);
         pickers.add(new Employee("Alice", 28, JobType.PICKER));
         pickers.add(new Employee("Bob", 32, JobType.PICKER));
         pickers.add(new Employee("Charlie", 25, JobType.PICKER));
@@ -45,7 +39,8 @@ public class PickingStation extends Station<PickingTask> {
                 logManager.writeLogEntry("Started picking of order " + task.getOrder().getOrderNumber(), "PickingStation");
 
                 if (!task.isItemAvailable()) {
-
+                    task.getOrder().setOrderStatusEnum(OrderStatusEnum.EXCEPTION);
+                    getListener().onOrderStatusChanged(task.getOrder());
                     logManager.writeLogEntry("ERROR: Item not available at shelf " + task.getShelfLocation(), "PickingStation");
                     throw new ItemNotFoundException("Item not available at shelf " + task.getShelfLocation());
                 }
@@ -56,6 +51,7 @@ public class PickingStation extends Station<PickingTask> {
                 logManager.writeLogEntry("Finished picking order by " + task.getPicker().getName(), "PickingStation");
 
                 task.getOrder().setOrderStatusEnum(OrderStatusEnum.PICKED);
+                getListener().onOrderStatusChanged(task.getOrder());
                 System.out.println("PickingStation finished picking. Putting task into AGV queue.");
                 addToQueue(new AgvTask(task.getOrder(), "shelves", "packing-station"));
 

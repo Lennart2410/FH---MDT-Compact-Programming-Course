@@ -1,10 +1,7 @@
 package HomeworkAssignment3.picking;
 
 
-import HomeworkAssignment3.general.Item;
-import HomeworkAssignment3.general.Order;
-import HomeworkAssignment3.general.OrderStatusEnum;
-import HomeworkAssignment3.general.Task;
+import HomeworkAssignment3.general.*;
 import HomeworkAssignment3.general.exceptions.WarehouseException;
 import HomeworkAssignment3.picking.exceptions.PickingException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,29 +21,33 @@ public class PickingStationTest {
     public void setUp() {
         BlockingQueue<Task> ingoingQueue = new ArrayBlockingQueue<>(1);
         BlockingQueue<Task> outgoingQueue =  new ArrayBlockingQueue<>(1);
-        station = new PickingStation(ingoingQueue,outgoingQueue);
+        station = new PickingStation(ingoingQueue,outgoingQueue, null);
     }
 
     @Test
-    public void testSuccessfulPick() throws WarehouseException {
+    public void testSuccessfulPick() throws WarehouseException, InterruptedException {
         System.out.println(" This test ran successfully");
 
         Order order = new Order("Test Street", List.of(new Item("Book")));
         PickingTask task = new PickingTask(order, "Shelf-A1", true);
+        task.setPicker(new Employee("Testname",22, JobType.PICKER));
 
 
         assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.ORDERED);
         station.process(task);
+        Thread.sleep(15500);
         assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.PICKED);
     }
 
     @Test
-    public void testItemUnavailableThrowsException() {
+    public void testItemUnavailableOrderStatusException() throws WarehouseException, InterruptedException {
         Order order = new Order("Test Street", List.of(new Item("Book")));
         PickingTask task = new PickingTask(order, "Shelf-A1", false);
+        task.setPicker(new Employee("Testname",22, JobType.PICKER));
+        station.process(task);
+        Thread.sleep(1000);
 
-
-        assertThrows(PickingException.class, () -> station.process(task));
+        assertEquals(order.getOrderStatusEnum(), OrderStatusEnum.EXCEPTION);
     }
 
     @Test

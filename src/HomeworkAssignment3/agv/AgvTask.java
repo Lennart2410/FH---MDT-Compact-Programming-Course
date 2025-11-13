@@ -4,15 +4,17 @@ package HomeworkAssignment3.agv;
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.Task;
 
-public class AgvTask extends Task {
+import java.io.Serializable;
+
+public class AgvTask extends Task  implements Serializable {
     private final String startingLocation;
     private final String destinationLocation;
     private AGV agv;
 
     // Constructor with agvId (used when you already know which AGV will handle the
     // task)
-    public AgvTask(Order order, String startingLocation, String destinationLocation, AGV agv) {
-        super(order);
+    public AgvTask(Order order, String startingLocation, String destinationLocation, AGV agv, String id) {
+        super(order, id);
         this.startingLocation = startingLocation;
         this.destinationLocation = destinationLocation;
         this.agv = agv;
