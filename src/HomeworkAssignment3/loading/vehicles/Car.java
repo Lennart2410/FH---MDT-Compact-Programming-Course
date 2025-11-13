@@ -26,7 +26,7 @@ public abstract class Car {
 
     public void drive() {
         try {
-            Thread.sleep(30000);
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

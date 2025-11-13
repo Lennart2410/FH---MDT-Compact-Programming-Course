@@ -45,7 +45,7 @@ public class PickingStation extends Station<PickingTask> {
                     throw new ItemNotFoundException("Item not available at shelf " + task.getShelfLocation());
                 }
 
-                Thread.sleep(15000); // Simulate picking time
+                Thread.sleep(10000); // Simulate picking time
 
 
                 logManager.writeLogEntry("Finished picking order by " + task.getPicker().getName(), "PickingStation");

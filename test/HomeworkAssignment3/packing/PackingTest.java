@@ -1,5 +1,6 @@
 package HomeworkAssignment3.packing;
 
+import HomeworkAssignment3.Warehouse;
 import HomeworkAssignment3.general.Item;
 import HomeworkAssignment3.general.Order;
 import HomeworkAssignment3.general.OrderStatusEnum;
@@ -25,16 +26,18 @@ public class PackingTest {
     PackingStation station;
     BlockingQueue<Task> ingoingQueue;
     BlockingQueue<Task> outgoingQueue;
+    Warehouse warehouse;
 
     @BeforeEach
     void setUp() throws Exception {
         ingoingQueue = new ArrayBlockingQueue<>(1);
         outgoingQueue = new ArrayBlockingQueue<>(1);
+        warehouse = new Warehouse();
 
         temp = Files.createTempDirectory("pack-logs-");
         io = new PackingIO(temp); // logs root = temp
 
-        station = new PackingStation(temp, io, ingoingQueue, outgoingQueue,null);
+        station = new PackingStation(temp, io, ingoingQueue, outgoingQueue,warehouse);
     }
 
     @AfterEach
@@ -144,7 +147,7 @@ public class PackingTest {
             }
         };
 
-        PackingStation station = new PackingStation(temp, ioFailingLabel, ingoingQueue, outgoingQueue, null);
+        PackingStation station = new PackingStation(temp, ioFailingLabel, ingoingQueue, outgoingQueue, warehouse);
 
         WarehouseException ex = assertThrows(WarehouseException.class, () -> station.process(task));
         // High-signal assertions (message + exception chain)
@@ -162,7 +165,7 @@ public class PackingTest {
         BoxingService ok = () -> List.of(new Parcel("P-" + order.getOrderNumber(), "S", 1.0));
         PackingTask task = new PackingTask(order);
         task.setPackerID("M-1");
-        PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue, null);
+        PackingStation station = new PackingStation(temp, io, ingoingQueue, outgoingQueue, warehouse);
         station.process(task);
 
         Path label = temp.resolve("PackingStation")
