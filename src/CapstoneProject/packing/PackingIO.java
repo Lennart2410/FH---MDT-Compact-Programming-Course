@@ -37,14 +37,10 @@ public class PackingIO {
         return base.resolve(d.format(DAY) + ".log");
     }
 
-    public Path getExportPath(String orderNo) {
-        return base.getParent().resolve("exports").resolve(orderNo + ".txt");
-    }
 
     public void addListener(LogListener listener) {
         listeners.add(listener);
     }
-
     public void searchLogsByLabel(String orderNumber) throws PackingIoException {
         List<Path> labels = null;
         try {
@@ -63,20 +59,6 @@ public class PackingIO {
             throw new PackingIoException("Find logs by date failed for " + date, e);
         }
         //hits.forEach(System.out::println);
-    }
-
-    public Path exportPackingLog(String orderNumber) throws PackingIoException {
-        Path label = base.resolve("labels").resolve(orderNumber + ".txt");     // source
-        Path dest = base.getParent().resolve("exports").resolve(orderNumber + ".txt"); // logs/exports/...
-        try {
-            Files.createDirectories(dest.getParent());
-            // COPY instead of MOVE
-            Files.copy(label, dest, StandardCopyOption.REPLACE_EXISTING);
-            return dest;
-        } catch (IOException e) {
-            throw new PackingIoException(
-                    "Export failed: " + label + " → " + dest, e);
-        }
     }
 
     public void logPacking(String orderNumber, String packerID, List<Parcel> parcels) throws PackingIoException {
@@ -121,7 +103,6 @@ public class PackingIO {
         }
     }
 
-
     /* ---- Find/open by regex (name/date) ---- */
     public List<Path> findByRegex(String regex) throws IOException {
         Pattern p = Pattern.compile(regex);
@@ -131,26 +112,6 @@ public class PackingIO {
                     .toList();
         }
     }
-
-    /* ---- Manage files: move, delete, archive ---- */
-    public void move(Path src, Path dst) throws IOException {
-        Files.createDirectories(dst.getParent());
-        Files.move(src, dst, StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    public void delete(Path p) throws IOException {
-        Files.deleteIfExists(p);
-    }
-
-    public void archive(Path src, Path zip) throws IOException {
-        Files.createDirectories(zip.getParent());
-        try (var zos = new java.util.zip.ZipOutputStream(Files.newOutputStream(zip))) {
-            zos.putNextEntry(new java.util.zip.ZipEntry(src.getFileName().toString()));
-            Files.copy(src, zos);
-            zos.closeEntry();
-        }
-    }
-
     public void addLogInUi(String station, String textToLog) {
         for (LogListener l : listeners) {
             l.onLog(station, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ": " + textToLog);

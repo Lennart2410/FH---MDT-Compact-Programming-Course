@@ -37,7 +37,7 @@ public class PackingStation extends Station<PackingTask> {
     }
 
     /**
-     * Extra constructor for tests (inject temp logs and/or custom IO).
+     * Extra constructor for tests .
      */
     public PackingStation(Path logsRoot, PackingIO packingIo, BlockingQueue<Task> in, BlockingQueue<Task> out, OrderStatusListener listener) {
         super(in, out, listener);
@@ -86,9 +86,6 @@ public class PackingStation extends Station<PackingTask> {
 
     private void LogPackingTask(PackingTask packingTask, List<Parcel> parcels) throws PackingException {
         packingIo.logPacking(packingTask.getOrder().getOrderNumber(), packingTask.getPackerID(), parcels);
-//        packingIo.searchLogsByDate(java.time.LocalDate.now().toString());
-//        packingIo.searchLogsByLabel(packingTask.getOrder().getOrderNumber());
-//        packingIo.exportPackingLog(packingTask.getOrder().getOrderNumber());
     }
 
     /**
@@ -126,9 +123,7 @@ public class PackingStation extends Station<PackingTask> {
             });
         }
 
-        // Keep the station thread alive until interrupted; alternatively just return
-        // Keep the station thread alive; Warehouse executor controls lifecycle
-
+        // Keep the station thread alive until interrupted; Warehouse executor controls lifecycle
         try {
             // simple idle wait;  Warehouse will control lifecycle with executor shutdown
             while (!Thread.currentThread().isInterrupted()) {
