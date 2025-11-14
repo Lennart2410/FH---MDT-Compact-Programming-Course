@@ -1,6 +1,6 @@
 # FH---MDT-Compact-Programming-Course
 
-Group work assignments for the Java Compact Programming Course
+[Capstone Screencast](https://fhdoprod-my.sharepoint.com/:v:/g/personal/lennart_ziehm002_stud_fh-dortmund_de/EcI-nraJebJDjY8Zv9daXPYBgxzOjDegjYPW1hnw81rsuA?e=dHHvqM)
 
 For starting the project the start of the main method inside the WarehouseRunner.class is needed.
 
